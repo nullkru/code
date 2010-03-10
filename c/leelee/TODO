@@ -1,0 +1,27 @@
++ there is a bug unloading modules (in the handling of lists)
++ irc name parse stuff
++ beliebige channel modes / user modes setzen, !mode
++ per commandline neuen user in bot.owner anlegen und md5 hash erzeugen
++ web interface?
++ google
++ party line
++ daemon mode
++ help
++ !say
++ !version
++ channel registrieren
++ factoids (+ verbieten)
++ polls / votes
++ statistics
++ dcc (file server?)
++ configurable prefix for commands
++ !topic, !invite
++ multiple servers / channels, !addserver, !addchannel
++ uptime
++ botnet / list sharing
++ async dns?
++ detect flooding (floodrate variable)
++ store hooks to the same function in one list
++ !die
++ provide timer functions for plugins
++ !rehash

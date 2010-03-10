@@ -1,0 +1,3 @@
+#!/bin/bash
+current=$(mpc | head -1)
+echo "mpc> $current"

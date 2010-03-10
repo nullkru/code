@@ -1,0 +1,163 @@
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+!!! couldn't resolve noya.homelinux.org
+
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+!!! couldn't resolve noya.homelinux.org
+
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+*** connecting 0.0.0.1 (port 6667)...
+!!! connect error: Invalid argument
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+*** connecting 0.0.0.1 (port 6667)...
+!!! connect error: Invalid argument
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+*** connecting 127.127.0.127 (port 6667)...
+!!! connect error: Connection refused
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+!!! couldn't resolve lhost
+
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+*** connecting 127.0.0.1 (port 6667)...
+!!! connect error: Connection refused
+ *  conffile loaded
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+!!! couldn't resolve lhost
+

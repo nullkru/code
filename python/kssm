@@ -1,0 +1,49 @@
+#!/usr/bin/python                                                                        
+#-*- coding: UTF-8 -*-
+
+import os, sys, dircache
+
+class kssm():
+	def __init__(self, username, socketdir='/tmp/screens/'):
+		self.username = username
+		if os.path.exists('%s/S-%s' % (socketdir,username)):
+			self.socketdir = socketdir+'/S-'+username
+		else:
+			self.socketdir = 0
+	
+	def __getitem__(self, key):
+		if key == 'n':
+			return self.createSess(raw_input('name: '))
+		else:
+			sessionname = self.sessLst[int(key)]
+			command = 'screen -x %s' % sessionname
+			return command
+
+	def __str__(self):
+		sessnames = '[kScreen Session Manager]\nChose your screen sessions ([n] for a new one):\n'
+		if self.socketdir:
+			sessions = dircache.listdir('%s' % (self.socketdir))
+			if sessions:
+				for session in sessions:
+					sessnames +=  ('%d - %s\n') % (sessions.index(session), session)
+			self.sessLst = sessions
+		return sessnames
+
+	def createSess(self, name=0):
+		if name:
+			command = 'screen -S %s' % name
+			return command
+		else:
+			return 'screen'
+
+c = kssm(os.environ['USER'])
+while (1):
+	try:
+		os.system('clear')
+		print c
+		os.system(c[raw_input('attach #: ')])
+	except:
+		import traceback
+		traceback.print_exc()
+		print '\nexiting %s' % sys.argv[0]
+		break

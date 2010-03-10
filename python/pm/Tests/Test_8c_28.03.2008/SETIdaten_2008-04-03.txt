@@ -1,0 +1,4 @@
+cmd invoke 2 Add_containers Quantity=60 Induction_point==WE00BB01.WG509 Label_barcode=AAA01801050301000 First_container_Id=100000000100000061
+
+cmd invoke 2 Add_containers Quantity=1000 Induction_point==WE00BB01.WG509 Label_barcode=AAB01801050301000 First_container_Id=100000000100001062
+

@@ -1,0 +1,29 @@
+#!/bin/sh
+# config syntax
+# backupdir="~/net/p/data/backuper"
+# backthisup="dir1 dir2"
+# exclude=".svn dir3"
+# rsyncopt=" --exclude-from=.excludelist"
+# postcmd="eg: mv  $backupdir blah  "
+
+BACKUPCONF="$HOME/.backthisup.conf"
+
+if [[ -e $BACKUPCONF ]]; then
+	source $BACKUPCONF
+
+	#build exclude list
+	for _exclude in $exclude; do
+		_excludelst="${_excludelst} --exclude $_exclude "
+	done
+	
+	echo "(i) back this up: $backthisup"
+	echo "(i) excluding $exclude"
+	sleep 1
+	
+	rsync $rsyncopt -Rrvlt $_excludelst  $backthisup $backupdir
+	[[ $postcmd ]] && $postcmd && echo "(i) post cmd executed"
+	exit 0
+else
+	echo "(!) sorry no config found. view script source for more informations"
+	exit 1
+fi

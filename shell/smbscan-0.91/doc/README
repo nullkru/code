@@ -1,0 +1,43 @@
+tiny readme for smbscan script by kon
+license: GNU http://www.gnu.org/copyleft/gpl.html
+provided as is, its not the script that may do harm, its always the user of the script
+think before you act :P
+ 
+TODO:
+it does work, more or less, but could be more comfortable
+supports smb (server message block) 
+prolly nbt (netbios over tcp) when using correct port (137-139 instead of 445)
+
+tools needed:
+
+smbclient \
+           }- these should come together with 'smbfs' 
+smbmount  / 
+
+netcat (nc) - the TCP/IP swiss army knife 
+
+python2.3 (optional...) - i know there IS a better way to handle the dates, i just dont know IT
+
+and some others... you'll certainly find out yourself what is missing :P
+
+usage:
+./smbscn start.ip-end.ip ,eg: ./smbscn 172.10.10.0-172.10.20.255
+
+what it does:
+it scans every IP of the given range and checks if microsoft-ds (tcp 445) is open.
+then it mounts every available share and gets it's content.
+
+see ./log/$date_of_scan/FS.log for a complete list to easily grep after files/extensions (yummy!)
+see ./mnt/$date_of_scan_/$IP for all mounted shares
+
+./umountshares unmounts all shares (oh, really?!) 
+  -> you might need umount in your sudoers file with NOPASSWD set to prevent annoyance
+./cleanlogs removes all folders and files created while scanning
+
+report bugs and ideas for improvement to kon@539.ch
+or contact kon at irc://kon.ath.cx:6667 (port 6697 for SSL)
+
+
+03/03/06 - kon
+
+

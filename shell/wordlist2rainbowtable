@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# script to create rainbow tables
+# scripted by: sili and kru_
+# date: 23.01.2007
+#
+#mysql commands
+# create database hashtable;
+# use hashtable;
+# create table rainbow (pw varchar(50), hash varchar(32), primary key(pw));
+# weitere commmands
+# show tables;
+# show databases;
+# pw ändern: update mysql.user set password = "blahbleh" where user = "root";
+usage() {
+	echo -e " usage: $0 <passwordlist file>"
+}
+
+[[ ! $@ ]] && usage && exit 1
+
+for word in $( cat $1 ); do 
+	
+	MD5SUM=$( echo -n $word | md5sum | awk '{ print $1 }' )
+	echo -e "INSERT into rainbow (pw, hash) VALUES (\"$word\", \"$MD5SUM\");" > /tmp/temphash ; \
+       	mysql -u root --password=blahbleh hashtable < /tmp/temphash
+done
+
+rm -rf /tmp/temphash
+

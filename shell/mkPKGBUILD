@@ -1,0 +1,58 @@
+#!/bin/bash
+# this will create a empty PKGBUILD file for arch-linux packaging 
+# system pacman
+
+
+
+### Config ###
+##PACKAGER name: if not set in env var. uncoment them
+#export PACKAGER="Mirko Messer <mirk@chao.ch>"
+##Your favourite editor if not set in env. var.
+EDITOR="vim"
+file=PKGBUILD
+
+
+
+create_pkgbuild () {
+
+#echo "#\$Id: \$" >> $file
+echo "#Contributor: `echo $PACKAGER`" >> $file
+#echo "#Comments:" >> $file
+echo "pkgname=`basename $PWD` " >> $file
+echo "arch=('i686')" >> $file
+echo "pkgver=" >> $file
+echo "pkgrel=1" >> $file 
+echo "pkgdesc=\"\"" >> $file
+echo "url=\"http://\"" >> $file
+echo "license=\"\"" >> $file
+echo "depends=()" >> $file
+echo "makedepends=()" >> $file
+echo "conflicts=()" >> $file
+echo "replaces=()" >> $file
+echo "backup=()" >> $file
+echo "#install=`basename $PWD`.install" >> $file
+echo "source=("$1")" >> $file
+echo "md5sums=()" >> $file
+echo "" >> $file
+echo "build() {" >> $file
+echo "	cd \$startdir/src/\$pkgname-\$pkgver" >> $file
+echo "	./configure --prefix=/usr" >> $file
+echo "	make || return 1" >> $file
+echo "	make DESTDIR=\$startdir/pkg install" >> $file
+echo "}" >> $file
+
+$EDITOR $file
+}
+
+
+if [ ! -f $file ]; then
+
+create_pkgbuild
+
+else
+echo "Sorry: PKGBUILD file already exist. Rename it..."
+exit 1
+
+fi
+
+#EOF

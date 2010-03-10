@@ -1,0 +1,15 @@
+#!/bin/bash
+#remember to put a NOPASSWD: line in your sudoers file
+
+cd mnt
+for i in *
+do 
+	for j in $i/* 
+	do 
+		sudo umount $j -l 2> /dev/null
+	done
+done
+cd -
+
+rm mnt/* -rf
+

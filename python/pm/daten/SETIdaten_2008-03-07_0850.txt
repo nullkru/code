@@ -1,0 +1,1 @@
+cmd invoke 2 Add_containers Quantity=19 Induction_point==WE00BB01.WG509 Label_barcode=AAC01801050301000 First_container_Id=100000000100000000 Induction_date=2008-03-07T08:50:00

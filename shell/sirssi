@@ -1,0 +1,13 @@
+#!/bin/bash
+# by kru<@chao.ch> [http://chao.ch]
+# date: 6.6.06
+#open irssi in screen if it already runs it would be attached...
+
+checkscreen=$(ps ax | grep -i "^.*screen_irssi" | grep -v grep)
+
+if [[ x$checkscreen == "x" ]]; then
+	screen -S screen_irssi irssi
+else
+	screen -x screen_irssi
+fi
+echo -ne "\033]0;irssi\007"

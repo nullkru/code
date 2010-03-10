@@ -1,0 +1,614 @@
+#!/usr/bin/env python
+
+info = """ 
+Use this script to download files from rapidshare. Start it, paste the
+rapidshare links, and press return. It should start to download the files to
+the current dir. 
+"""
+
+copyrightData = """
+This software is licensed under GPL version 2. You can read a copy
+of that in:
+http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+"""
+
+author = """
+Juanjo Alvarez Martinez <juanjux@gmail.com>
+"""
+
+import os, time, ConfigParser, sys, threading
+from subprocess import *
+from copy import copy
+from pprint import pprint
+
+try:
+    from PyQt4.QtGui import *
+    from PyQt4.QtCore import *
+except ImportError:
+    print 'Warning, no Qt, no GUI'
+   
+
+# Example .rapidsucker.conf:
+
+# [options]
+# user = 555555
+# pass = 888888
+
+CONF    = '~/.rapidsucker.conf'
+WGET    = '/usr/bin/wget'
+PLAYPROGRAM = '/usr/bin/play'
+REMEMBERFILE = '.rapidsucker_last.tmp'
+
+# OR you can assign to these variables, but be careful not 
+# to publish the script source on some public site:
+
+USER = 'kru'
+PASS = 'supersicher!'
+
+class DownloadStatus:
+    starting      = -1
+    noop          = 0
+    downloading   = 1
+    finishedok    = 2
+    finishederror = 3
+    restarting    = 4
+
+class DownloadThread(threading.Thread):
+    def __init__(self, url, user, passwd, wget, datadict, restart=False):
+        self.url       = url
+        self.datadict  = datadict
+        self.datadict['filename']  = url.split('/')[-1]
+        self.user      = user
+        self.passwd    = passwd
+        #self.lock      = lock
+        self.wget      = wget
+        self.datadict['status']  = DownloadStatus.noop
+        self.restart = restart
+        if not self.datadict.has_key('retries'):
+            self.datadict['retries'] = 0
+
+        threading.Thread.__init__(self)
+
+    def run(self):
+        try:
+            cmdline = '%(wget)s -c --http-user=%(user)s --http-password=%(pass)s %(url)s'\
+                    % {'wget': self.wget, 'user':self.user, \
+                       'pass': self.passwd, 'url': self.url}
+            #print cmdline
+            self.datadict['url']     = self.url
+            self.datadict['output']  = ''
+            self.datadict['total']   = ''
+            self.datadict['percent'] = ''
+            if not self.restart:
+                self.datadict['status']  = DownloadStatus.starting
+            else:
+                self.datadict['status']  = DownloadStatus.restarting
+
+            wgetproc = Popen( cmdline, shell=True, stdout=PIPE, stderr=PIPE)
+            self.datadict['pid'] = wgetproc.pid
+
+            line = wgetproc.stderr.readline()
+
+            while line != '':
+                if line.find( self.datadict['filename'] ):
+                    if line.find('saved') != -1:
+                        self.datadict['status'] = DownloadStatus.finishedok
+                        # Finish:
+                        wgetproc.communicate()
+                        break
+                    
+                    if line.find('Unsupported scheme') != -1:
+                        self.datadict['status'] = DownloadStatus.finishederror
+                        wgetproc.communicate()
+                        break
+
+                dots = '.......... .......... .......... .......... ..........'
+                tokens = []
+                if line.find( dots ) != -1:
+                    self.datadict['status'] = DownloadStatus.downloading
+                    tokens = line.split()
+                    if len( tokens ) == 9: 
+                        self.datadict['total']   = tokens[0]
+                        self.datadict['percent'] = tokens[6]
+                        self.datadict['speed']   = tokens[7]
+                line = wgetproc.stderr.readline()
+
+            if wgetproc.returncode != 0:
+                self.datadict['status'] = DownloadStatus.finishederror
+            else:
+                self.datadict['status'] = DownloadStatus.finishedok
+        except IOError:
+            # Probably interrupted syscall while reading from wget
+            # because of the kill of a thread on cleanUp() method
+            self.datadict['status'] = DownloadStatus.finishederror
+
+class RapidDownloader:
+    def __init__(self, wget, user = '', passwd = '', retries=1, rememberurls=True):
+        self.user         = user
+        self.passwd       = passwd
+        self.wget         = wget
+        self.retries      = retries
+        self.rememberurls = rememberurls
+        self.cookiefile   = ''
+        self.parturls     = []
+        self.threadList   = []
+        self.parturls     = []
+        self.pendingTimeList = []
+        self.averageItems = 20
+
+    def addDownloads(self, paramUrls):
+        self.parturls += paramUrls
+
+    def startDownloads(self):
+        for url in self.parturls:
+            # Dict to keep the download data, (%, status, etc). 
+            # It's updated by the thread
+            cont = 0
+            for ref in self.threadList:
+                # Ignore it if already was on the list
+                #pprint( ref['data'])
+                if url == ref['thread'].url: cont = 1
+            if cont: continue
+
+            downloadData = {}
+
+            dthread = DownloadThread( url, self.user, self.passwd, self.wget, downloadData )
+            self.threadList.append( {'thread': dthread, 'data': downloadData} )
+            dthread.start()
+
+    def printOutput(self):
+        # FIXME: Keep this out of the class
+        finished = False
+
+        while not finished:
+            finished = True
+            os.system('clear')
+
+            ptime = self.calculatePendingTime()
+            if ptime != None:
+                print 'Pending: %.2d:%.2d:%.2d' % ptime
+
+            for refs in self.threadList:
+                data  = refs['data']
+                thread = refs['thread'] 
+
+                cad = data['filename'].ljust(40)
+                if thread.isAlive():
+                    finished = False
+                    if   data['status'] == DownloadStatus.starting:
+                        cad += ' Starting download'.rjust(40)
+                    elif data['status'] == DownloadStatus.restarting:
+                        cad += ' Restarting download'.rjust(40)
+                    elif data['status'] == DownloadStatus.finishedok:
+                        cad += ' Finished'.rjust(40)
+                    elif data['status'] == DownloadStatus.finishederror:
+                        cad += ' Error'.rjust(40)
+                    elif data['status'] == DownloadStatus.restarting:
+                        cad += ' Restarting download'.rjust(40)
+                    elif data['status'] == DownloadStatus.downloading:
+                        total   = data['total'].ljust(12)
+                        percent = data['percent'].ljust(3)
+                        speed   = data['speed'].ljust(10)
+                        dataStr = total + ' ' + percent + ' ' + speed
+                        cad += ' ' + dataStr 
+                    elif data['status'] == DownloadStatus.noop:
+                        cad += ' Initializing ' + str(data['status'])
+                else: # Thread not alive
+                    dataStr = data['total'].ljust(12) + ' ' + data['percent'].ljust(3)
+
+                    if data['status'] == DownloadStatus.finishedok:
+                        cad += ( data['total'].ljust(12) +  ' 100% '.ljust(3) + ' Finished'.rjust(10) )
+                    elif data['status'] == DownloadStatus.finishederror:
+                        if data['retries'] < self.retries:
+                            # Retry
+                            finished = False
+                            data['retries'] += 1
+                            idx = self.threadList.index( refs )
+                            self.threadList.remove( refs )
+                            downloadData = {}
+                            downloadData['retries'] = data['retries']
+                            dthread = DownloadThread( data['url'], self.user, self.passwd, self.wget,\
+                                                      downloadData, restart=True )
+                            self.threadList.insert( idx, {'thread': dthread, 'data': downloadData} )
+                            dthread.start()
+                            cad += ( data['total'].ljust(12) + ' ' + data['percent'].ljust(3) + ' Retrying'.rjust(10) )
+                        else:
+                            cad += ( data['total'].ljust(12) + ' ' + data['percent'].ljust(3) + ' Error'.rjust(10) ) 
+                print cad
+            time.sleep(0.5)
+
+    def calculatePendingTime(self):
+        # Create data structure for the Almost Realistic Download Time Calculator
+        # FIXME: Not very optimal to create a new data struct on every calculation...
+
+        dList = []
+        for refs in self.threadList:
+            data = refs['data']
+            if data['status'] == DownloadStatus.downloading:
+                if not data.has_key('total') or data['total'][:-1] == '': data['total'] = '0K'
+                if not data.has_key('speed'): data['speed'] = '0K'
+                dList.append({'name': data['filename'], 'dloaded': int(data['total'][:-1]), 'speed': float(data['speed'][:-1])})
+
+        if len(dList) > 0:
+            pendingTime = self.calculatePendingTimeRec(dList)
+        else:
+            return None
+
+        # Now insert the time into the list with the last self.averageItems
+        # times and return the average
+
+        if len(self.pendingTimeList) >= self.averageItems:
+            # Remove the older of the last self.averageNumber
+            self.pendingTimeList.pop(0)
+
+        self.pendingTimeList.append( pendingTime )
+        averageTime = sum( self.pendingTimeList ) / len( self.pendingTimeList )
+
+        hours   = int(averageTime / 3600)
+        minutes = int((averageTime - (3600*hours)) / 60)
+        seconds = int(averageTime - (3600*hours) - (minutes*60)) 
+        return hours, minutes, seconds
+
+    def calculatePendingTimeRec(self, sizes):
+        # FIXME XXX: GUARDAR Y PONER TIEMPO REAL!!!
+        total = 100000
+
+        # Stop condition
+        if len(sizes) == 1:
+            return (total-sizes[0]['dloaded']) / sizes[0]['speed']
+
+        current = 0
+        totalTime = currentIdx = currentSpeed = -1
+
+        first = True
+        
+        for idx, dload in enumerate(sizes):
+            if dload['speed'] == 0: dload['speed'] = 0.0000001
+            toFinish = ( total - dload['dloaded'] ) / dload['speed']
+            if toFinish < current or first:
+                first = False
+                current = toFinish
+                currentIdx = idx
+                currentSpeed = dload['speed']
+
+        # Use the time machine to advance time to the point this first file is
+        # downloaded:
+        totalTime += current
+        othersizes = []
+
+        # Calculate how much will the download advance for the other downloads when
+        # the first one ends:
+        for idx, dload in enumerate( sizes[:currentIdx] + sizes[currentIdx+1:] ):
+            dloaded = dload['dloaded'] + ( dload['speed'] * current )
+            if dloaded > total: dloaded = total
+
+            # Since now there is a file less, the other files get its part
+            # of the bandwith it was using:
+            speed = dload['speed'] + ( currentSpeed / ( len(sizes) - 1 ) )
+
+            newDict = {'name': dload['name'], 'dloaded': dloaded, 'speed': speed }
+            othersizes.append( newDict )
+
+        totalTime += self.calculatePendingTimeRec(othersizes)
+        return totalTime
+    
+    def keyCleanUp(self):
+        # FIXME: This should be out of the class (user interaction)
+        print 'Cancelling: delete downloaded files? (y/N)'
+        res = raw_input().strip()
+        if res == 'y' or res == 'yes':
+            for ref in self.threadList:
+                os.system('rm -f "%s"' % ref['data']['filename'])
+
+        self.cleanUp()        
+
+    def cleanUp(self):
+        for ref in self.threadList:
+           try:
+              os.system('kill %s > /dev/null 2>/dev/null' % ref['data']['pid'])
+           except: pass
+
+def getURLs(fname, saveurls=True):
+    urls = []
+    while 1:
+        url = raw_input().strip()
+        if url == '': break
+        urls.append(url.strip())
+    #pprint(urls)
+    
+    # Save URLs to continue if we crash, user cancels, etc
+    if saveurls:
+        f = open( fname, 'w' )
+        for url in urls:
+            f.write( url + '\n' )
+        f.close()
+    return urls
+
+def retrievePendingUrls( fname ):
+    urls = []
+    if os.path.exists( fname ):
+        f = open( fname )
+        lines = f.readlines()
+        urls = [line.strip() for line in lines]
+
+    if urls != []:
+        print 'There are some saved URLs from a previous unfinished session:'
+        for url in urls: print url
+        print 'Do you want to continue downloading? [Y/n]'
+        res = raw_input().strip()
+
+        if res.lower() in ['n', 'no']:
+            # Doesn't want, restore empty url list and ask to delete the file
+            urls = []
+            print 'Do you want to delete these saved URLs? [Y/n]'
+            res2 = raw_input().strip()
+            if res2.lower() in ['y', 'yes', 'si']:
+                os.unlink( fname )
+    return urls
+
+def parseConf(configfile):
+    global WGET
+    global PLAYPROGRAM
+    config = {}
+    try:
+        configd = ConfigParser.SafeConfigParser()
+        configd.read( ( os.path.expanduser(configfile) ) )
+        config['user']     = configd.get('options', 'user')
+        config['passwd']   = configd.get('options', 'pass')
+        config['playfinishsound'] = False
+        config['rememberurls'] = True
+
+        if configd.has_option('options', 'playfinishsound'):
+            if configd.get('options', 'playfinishsound').lower() in ['1', 'yes', 'si']:
+                config['playfinishsound'] = True
+
+        if configd.has_option('options', 'finishsound'):
+            config['finishsound'] = configd.get('options', 'finishsound')
+
+        if configd.has_option('options', 'wgetpath'):
+            config['wgetpath'] = configd.get('options', 'wgetpath')
+        else: config['wgetpath'] = WGET
+
+        if configd.has_option('options', 'playprogram'):
+            config['playprogram'] =  configd.get('options', 'playprogram')
+        else:
+            config['playprogram'] = PLAYPROGRAM
+
+        if configd.has_option('options', 'rememberurls'):
+            if configd.get('options', 'rememberurls').lower() in ['0', 'no', 'false']:
+                config['rememberurls'] = False
+
+        try:
+            # 2 retries by default:
+            config['retries']  = configd.getint('options', 'retries')
+        except ConfigParser.NoOptionError: config['retries'] =  2
+    except IOError:
+        print 'No config file: ' + os.path.expanduser( configfile )
+        print '(or chage the vars at the start of the code)'
+        sys.exit(1)
+    except ConfigParser.MissingSectionHeaderError:
+        print 'You have to put [options] at the start of the config file (or change the vars at the start of the code)'
+        sys.exit(1)
+    except ConfigParser.NoOptionError:
+        print 'Wrong options file format, correct format (or change the vars at the start of the code)'
+        sys.exit(1)
+    except ConfigParser.NoSectionError:
+        print 'Wrong options file format or missing options file ~/.rapidsucker.conf (or change the vars at the start of the code)'
+        sys.exit(1)
+    return config
+
+
+#=================== GUI WINDOW ===============================================
+
+class MainWindow(QMainWindow):
+    def __init__(self, *args):
+        apply(QMainWindow.__init__, (self, ) + args)
+        
+        if USER != '000000' and PASS != '000000':
+            self.r = RapidDownloader(WGET, USER, PASS, 2, True)
+        else:
+            config = parseConf( CONF )
+            self.r = RapidDownloader(WGET, config['user'], config['passwd'], config['retries'], config['rememberurls'])
+
+        # Timer that will be used to update the GUI regularly
+        self.updateTimer = QTimer( self )
+
+        centralFrame = QFrame(self)
+        self.setCentralWidget(centralFrame)
+        self.urlBoxlayout = QGridLayout(centralFrame)
+
+        labelUrl         = QLabel( "Paste links here and push the button to start downloading:", self )
+        self.urlBoxEdit  = QTextEdit( self )
+        self.downButton  = QPushButton( "Download!", self )
+        self.clearButton = QPushButton( "Clear", self )
+        self.urlBoxlayout.addWidget( labelUrl, 0, 0, 1, 2 )
+        self.urlBoxlayout.addWidget( self.urlBoxEdit, 1, 0, 2, 2 )
+        self.urlBoxlayout.addWidget( self.downButton, 3, 0)
+        self.urlBoxlayout.addWidget( self.clearButton, 3, 1)
+
+        # FIXME: Removed the tree line from progressList
+        self.progressList = QTreeWidget( self )
+        self.progressList.setItemsExpandable( 0 )
+        self.progressList.setRootIsDecorated( 0 )
+        self.progressList.setColumnCount( 4 )
+        self.progressList.setHeaderLabels( ["File", "Progress", "Speed", "Downloaded"] )
+        self.urlBoxlayout.addWidget( self.progressList, 4, 0, 2, 2 )
+        self.urlBoxlayout.update()
+
+        self.optionsButton = QPushButton( "Options", self )
+        self.urlBoxlayout.addWidget( self.optionsButton, 6, 0, 1, 1 )
+
+        self.progressList.setColumnWidth(0, 200)
+        self.progressList.setColumnWidth(1, 80)
+        self.progressList.setColumnWidth(2, 100)
+        self.progressList.setColumnWidth(3, 150)
+
+        self.resize( self.width(), self.height() )
+
+        self.connect(self.downButton,  SIGNAL("clicked()"), self.downloadClicked)
+        self.connect(self.clearButton, SIGNAL("clicked()"), self.clearClicked)
+        #self.connect(self, SIGNAL("closed()"), self.finish)
+
+    def downloadClicked(self):
+        # FIXME: Validate the URLs
+        # FIXME: This will boom with urls with spaces
+        urlLines = str(self.urlBoxEdit.toPlainText()).strip().split(' ')
+        if len(urlLines) > 0:
+            self.r.addDownloads( urlLines )
+            self.r.startDownloads()
+        if not self.updateTimer.isActive():
+            self.connect(self.updateTimer, SIGNAL("timeout()"), self.updateDownloads)
+            self.updateTimer.start( 500 )
+        self.urlBoxEdit.clear()
+
+    def clearClicked(self):
+        self.urlBoxEdit.clear()
+
+    def updateDownloads(self):
+        # FIXME: El "retrying" parpadea
+        # FIXME: Solo pone "retrying" para el primer elemento
+
+        print 'XXX en updateDownloads'
+        # Get the selected elements to restore them later after the update
+        selectedItems = self.progressList.selectedItems()
+        textSelected = [i.text(0) for i in selectedItems]
+
+        self.progressList.clear()
+        finished = True
+        
+        for refs in self.r.threadList:
+            data   = refs['data']
+            thread = refs['thread']
+
+            item = QTreeWidgetItem( self.progressList )
+            item.setText(0, data['filename'])
+            item.setText(3, data['total'])
+
+            if thread.isAlive():
+                finished = False
+                item.setText(1, data['percent'])
+
+                if data['status'] == DownloadStatus.starting:
+                    item.setText(2, 'Starting')
+                elif data['status'] == DownloadStatus.restarting:
+                    item.setText(2, 'Restaring')
+                else:
+                    item.setText(2, data['speed'])
+            else:
+                if data['status'] == DownloadStatus.finishedok:
+                    item.setText(1, "100%")
+                    item.setText(2, "Finished")
+                elif data['status'] == DownloadStatus.finishederror:
+                    if data['retries'] < self.r.retries:
+                        finished = False
+                        # Retry
+                        data['retries'] += 1
+                        idx = self.r.threadList.index( refs )
+                        self.r.threadList.remove( refs )
+                        downloadData = {}
+                        downloadData['retries'] = data['retries']
+                        dthread = DownloadThread( data['url'], self.r.user, self.r.passwd, self.r.wget, downloadData )
+                        self.r.threadList.append( {'thread': dthread, 'data': downloadData} )
+                        dthread.start()
+                        item.setText(1, data['percent'])
+                        # FIXME: Rellenar el item
+                        item.setText(1, data['percent'])
+                        item.setText(2, 'Retrying')
+                    else:
+                        item.setText(1, data['percent'])
+                        item.setText(2, 'Error')
+
+        if len(self.r.threadList) == 0 or finished:
+            self.updateTimer.stop()
+
+        self.progressList.resizeColumnToContents(0)
+        
+        # Restore selected items
+        for item in self.progressList.findItems("*", Qt.MatchWildcard, 0):
+            if item.text(0) in textSelected:
+                item.setSelected(1)
+
+    def closeEvent(self, event):
+        # FIXME: Offer to delete the partially downloaded files
+        self.r.cleanUp()
+
+#==============================================================================
+
+def ConsoleMain():
+    try:
+        # The global vars have preference if set:
+        if USER != '000000' and PASS != '000000':
+            r = RapidDownloader(WGET, USER, PASS, 2)
+            config = None
+            retrievePending = True
+        else: 
+            config = parseConf( CONF )
+            r = RapidDownloader(config['wgetpath'], config['user'], config['passwd'], 
+                                config['retries'], config['rememberurls'])
+            retrievePending = config['rememberurls']
+
+        if retrievePending: urls = retrievePendingUrls( REMEMBERFILE )
+        else: urls = []
+
+        if urls == []:
+            print 'Paste links here, finish pressing return on an empty line:'
+            urls = getURLs( REMEMBERFILE, retrievePending )
+
+        print 'Downloading files...'
+        r.addDownloads( urls )
+        r.startDownloads()
+        r.printOutput()
+    # FIXME: No hace falta si no se ha empezado a bajar...
+    except KeyboardInterrupt:
+        r.keyCleanUp()
+    else:
+        # Play finish sound if configured to do so
+        if config != None and config['playfinishsound']:
+            os.system('%s %s >/dev/null 2>/dev/null' % (config['playprogram'], config['finishsound']))
+
+        print 'Cleaning up...'
+        r.cleanUp()
+
+        # Finished ok: no need to remember the URLs
+        if retrievePending: os.unlink( REMEMBERFILE )
+
+def QtMain(args):
+    app = QApplication(args)
+    win = MainWindow()
+    win.show()
+    
+    #app.connect(app, SIGNAL("lastWindowClosed()"), win, finish)
+    app.exec_()
+
+#==============================================================================
+
+if __name__ == '__main__': 
+    qt = 0
+    if not qt:
+        ConsoleMain()
+
+    if qt:
+
+        QtMain(sys.argv)
+
+# CODE END ====================================================================
+
+changeLog = """
+0.0.1 - It's kludgy but it works
+0.0.2 - It's kludgy but it's multithread
+0.0.3 - It's kludgy but it does retries
+0.1   - It's less kludgy (download class separated from user interaction)
+0.1.1 - Includes a prototyped Qt GUI
+0.2   - Includes the Almost Realistic Download Time Calculator
+0.2.1 - Includes the option to play a sound on download finish
+0.3   - Bugfixes and remembers URLs in case of interrupted operation
+"""
+
+TODO = """
+- Create a list of URLs we're dowloading so restarts are possible
+- Qt (nice) GUI
+- Split into several files?
+- Ask for user and password the first time and create config file
+- Windows support 
+"""
+

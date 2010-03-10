@@ -1,0 +1,2 @@
+create sqlite db:
+CREATE TABLE todo (id INTEGER PRIMARY KEY, date INTEGER, node TEXT, item TEXT, done INTEGER, pass TEXT);

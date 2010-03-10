@@ -1,0 +1,8 @@
+1.2
+	- added generic shellcode decoder which can handle shellcode up
+	  to 64kb in length containing any bytes
+	- added encoder for this type of decoder
+	- fixed some signedness issues in array accessment
+
+1.1
+	- first official release

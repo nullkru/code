@@ -1,0 +1,56 @@
+/* Schriftart im gesamten Dokument */
+body {
+font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* Absätze, Tabellen, Formulare in 10 Punkt */
+p, div, table, li, form  {
+font-size: 10pt; 
+}
+
+/* Hintergrundfarbe grau und weißer Schrift */
+h1 {
+background-color: gray;
+color: white;
+} 
+
+/* Überschrift 2 und 3 blau färben */
+h2, h3 {
+color: #000099; 
+} 
+
+/* fette Passagen rot einfärben */
+b {
+color: red; 
+} 
+
+/* kursive Passagen blau färben */
+i {
+color:  #000099; 
+} 
+
+/* Link-Stile für Hover-Links  */
+a:link {
+color: #000099; 
+} 
+
+a:hover {
+text-decoration : none; 
+color: red; 
+} 
+
+a:active {
+color: black; 
+} 
+
+a:visited {
+color: gray; 
+}
+
+.asc {
+background-color: #FFFFC7;
+}
+
+.desc {
+background-color: #FFFFC7;
+}

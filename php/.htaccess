@@ -1,0 +1,47 @@
+DirectoryIndex noindexisusedhere
+
+Options '+Indexes'
+
+IndexOptions '+FancyIndexing'
+
+AddType text/plain .sh
+AddType text/plain .txt
+AddType text/plain .php
+AddType text/plain .sh
+AddType text/plain .pl
+AddType text/plain .c
+AddType text/plain .tcl
+AddType text/plain .h
+AddType text/plain .cgi
+AddType text/plain .py
+AddType text/plain .js
+AddType application/x-httpd-php-source .php
+
+HcgiPhpProfileName php5 cpfiggch
+
+IndexOptions VersionSort
+#sortieren nach datum und description volle länge
+IndexOrderDefault Descending Date
+IndexOptions '+DescriptionWidth=*'
+
+#alle angegebenen endungen werden alls text/plain geparst
+
+#.php als php source anzeigen lassen
+IndexIgnore .user .htaccess .HEADER.html .README.txt .style.css
+
+AddDescription "bash,awk,sed shell ... scripts" shell
+AddDescription "C source code" C
+HeaderName .HEADER.html
+ReadmeName .README.txt
+IndexOrderDefault Descending Date
+IndexIgnore .user .htaccess .HEADER.html .README.txt .style.css
+AddDescription "bash,awk,sed shell ... scripts" shell
+AddDescription "C source code" C
+AddDescription "Perl scripts" perl
+AddDescription "php scripts" php
+AddDescription "set of tools (kware = kru ware not kde or something)" kware
+AddDescription "my personal bash functions file..." krufunctions.sh
+AddDescription "dead or not now finished projects" not_finished
+
+#@__HCP_END__@#
+# Anything after the comment above is left alone

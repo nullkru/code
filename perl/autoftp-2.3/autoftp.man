@@ -1,0 +1,140 @@
+.ll 6.5i
+.TH AUTOFTP L "17-Sep-02"
+.SH NAME
+autoftp - retrieve/send/list/delete files via FTP automatically
+.SH SYNOPSIS
+autoftp [-c] [-d #] [-l[arg] | -k | -s] [-p password] [-r #] [-u name] [-v] (-f filename | 'system;dir;mode;file(s)'...)
+.br
+
+.br
+autoftp -version
+.SH DESCRIPTION
+Autoftp will retrieve, send, list, or delete files with any machine that
+supports the FTP protocol.  This includes anonymous FTP as well as an
+individual's account.
+
+Features include:
+
+.ta 2
+	o can perform supported actions without interaction
+.br
+	o ability to use any user name or password
+.br
+	o ability to retry retrieving files
+.br
+	o ability to go outside a firewall
+
+A useful alias to set up (if you're using csh) is:
+
+.in +5
+alias alog 'autolog -v \\!* >&! autolog'
+.in -5
+
+This will log any messages produced by autoftp to the file 'autolog'.
+
+Autoftp is written in Perl5 and requires the Net::FTP API.  This API is
+found in the "libnet" module which can be found on CPAN (http://www.cpan.org/).
+Autoftp needs "libnet" v1.0606 or newer.
+.SH OPTIONS
+.IP "-c"
+show a completion message if there were NO errors during a sending or
+retrieving operation.  The default is for autoftp to be silent if the FTP
+transfer was successful.
+.IP "-d #"
+sets the delay between retries.  '#' is the number of seconds to wait.  The
+default is 300.
+.IP "-f filename"
+specifies a filename containing commands for autoftp to execute.  The commands
+are in the same format (1 per line) as they would appear if given on the
+command line (see COMMANDS below).
+.IP "-l[args]"
+tells autoftp to 'list' files instead of retrieving them.  The optional 'args'
+parameter are arguments to use with the 'ls' command.  For example, if the
+option '-lal' is given, the ls command FTP will use is 'ls -al'.  The default
+for 'args' is '-FC'.  Autoftp will retrieve files by default.
+.IP "-k"
+tells autoftp to 'delete' files instead of retrieving them.  Autoftp will
+retrieve files by default.
+.IP "-p password"
+is the password to use when logging in.  If the password isn't given, the
+user's email address is used:
+
+.in +5
+user@domain
+.in -5
+
+where 'user' is the login name of the person running autoftp and domain
+is the email domain for this machine (hardcoded).
+.IP "-r #"
+sets the number of retry attempts.  This is the number of attempts autoftp
+will try to retrieve files before it finally gives up.  Setting it to a negative
+number is the same as infinity (i.e. it will never give up).  Default is
+infinity.
+.IP "-s"
+tells autoftp to 'send' files instead of retrieving them.  Autoftp will
+retrieve files by default.
+.IP "-u name"
+is the user name to use when logging in.  The default is 'anonymous'.
+.IP "-v"
+tells autoftp to be verbose.  For each action, it will list the machine,
+directory, transfer mode, and files it plans to send, retrieve, or delete.
+.IP "-version"
+show the current version and exit (no processing is done).
+.SH COMMANDS
+Commands use the same format whether they are on the command line are in a
+file (-f option).  It's usually a good idea to surround each command (only
+when on the command line) with single quotes (to prevent expansion of
+metacharacters).  The format is one command per line (if using a file).
+Commands are of the form:
+
+.in +5
+system;directory;mode;file(s)
+.in -5
+
+The first field is the name of the system to connect to.  There is no
+default value for this field.
+
+The second field is the directory to use for transferring.  Default is the
+current directory.
+
+The third field is the mode in which to transfer.  The choices are: 'a' for
+ASCII and 'b' for binary.  Default is ASCII mode.
+
+The fourth field are the filenames in which to send, retrieve, or delete.
+Wildcards are supported as long as the underlying ftp program can support
+them.  Files are separated by whitespace (i.e. spaces, tabs).  There is no
+default value for this field.
+
+Each attribute is separated by a semi-colon (;).  Fields can be blank, in which
+case the attribute value is unchanged.  For example, if the first command is:
+
+.in +5
+machineA;/pub;a;xxy.txt
+.in -5
+
+and the second command is:
+
+.in +5
+;/work;b;a.out b.out
+.in -5
+
+then the system used in the second machine is 'machineA'.  Remember to make
+sure all 3 semi-colons are in each command, whether a particular field has
+a value or not.  It's an error if the \f2system\f1 or \f2filename\f1 field
+is blank in the first command.
+.SH SEE ALSO
+ftp(1C)
+.sp
+Net::FTP (part of the libnet module, http://www.cpan.org/)
+.SH BUGS
+There is a potential for Net::FTP (v1.0606) to not correctly figure out
+if it needs to use an FTP proxy or not. This is due to the fact that machines
+within a company's firewall can still send DNS queries on machines outside the
+firewall and get back legitimate answers even though the remote machine is
+not directly reachable.  This is due to a DNS query going up the DNS chain.
+If the company's top DNS server can't answer a request, it will send it
+to a DNS server on the internet that can answer the request, so the request
+can make it past the firewall.  I've been told this will be fixed in the
+next version of Net::FTP.
+.SH AUTHOR
+Adam Stein (adam@scan.mc.xerox.com)

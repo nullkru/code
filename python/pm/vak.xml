@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Announcements xsi:schemaLocation="http://www.post.ch/ids/apl PPS_Announcement.xsd" xmlns="http://www.post.ch/ids/apl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Postcode>130050</Postcode>
+	<Announcement>
+		<VAP>AAA</VAP>
+		<Destination>130050311</Destination>
+		<captureDate>2008-04-01T06:00:00</captureDate>
+		<missedIZV>false</missedIZV>
+		<Counter>0</Counter>
+	</Announcement>
+</Announcements>

@@ -1,0 +1,7 @@
+while (ptr != NULL && i <= MAX_ARGS)
+   {
+     args[i] = (char *) malloc (strlen (ptr) + 1);
+     strcpy (args[i], ptr);
+     ptr = strtok (NULL, " \n");
+     i++;
+   }

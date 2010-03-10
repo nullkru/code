@@ -1,0 +1,30 @@
+ *  changed loglevel to Info (3)
+ *  conffile loaded
+ *  loading tcl scripts...
+ *  scripts/show_variables.tcl executed
+ *  1 out of 1 scripts were valid
+*** setting up default events...
+ *  hooked command 001
+ *  hooked command PING
+ *  hooked command JOIN
+ *  hooked command MODE
+ *  hooked command NICK
+ *  hooked command PRIVMSG
+*** loading plugins...
+ *  2 plugins found
+ *  loading plugins/seen.so...
+ *  hooked command PRIVMSG
+ *  hooked command JOIN
+ *  loading plugins/double_nick.so...
+ *  hooked command 443
+*** connecting 84.156.4.237 (port 6667)...
+*** connected
+ *  user test2 joined channel #blah
+ *  join event catched
+ *  exit!
+*** unloading plugins...
+ *  unloading plugins/seen.so
+ *  removed hook PRIVMSG
+ *  removed hook JOIN
+ *  unloading plugins/double_nick.so
+ *  removed hook 443

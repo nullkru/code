@@ -1,0 +1,152 @@
+#!/usr/bin/python
+
+dbname = 'rapy.sqlite'
+wget = '/usr/bin/wget'
+
+#from pysqlite2 import dbapi2 as sqlite
+from subprocess import *
+import sys, os
+
+class rapy():
+
+	dlrate = 0
+	trys = 3
+	paralleldl = 1
+
+	currentid = ''
+	currentgroup = ''
+	
+	def createDB(self):
+		c.execute('CREATE TABLE rapy \
+				(id INTEGER PRIMARY KEY,\
+				url VARCHAR(300), \
+				rapgroup VARCHAR(50), \
+				pw VARCHAR(50),\
+				finished INTEGER)')
+		print "db created"
+
+	def __init__(self):
+		#create connection to db
+		from pysqlite2 import dbapi2 as sqlite
+		self.connection = sqlite.connect(dbname)
+		self.c = self.connection.cursor()
+		print "starting rapy up..."
+
+	def addLink(self, url, group='NULL', pw='NULL', finished=0):
+		self.c.execute('INSERT INTO rapy VALUES (null, ?, ?, ?, ?)', (url, group, pw, finished))
+		self.connection.commit()
+		print('added: %s') % url
+	
+	def addMulti(self, file):
+		f = open(file)
+		line = f.readline()
+		while line:
+			if line == 0:
+				print 'file is empty nothing to add'
+			else:
+				self.addLink(line.strip())
+				line = f.readline()
+
+	def delfromdb(self, id):
+		sql = 'DELETE FROM rapy WHERE id=%d' % id
+		self.c.execute(sql) 
+		print 'deleted row with id: %d' % id
+
+	def getnextidfromdb(self):
+		sql = 'SELECT id,finished FROM rapy WHERE finished<>1'
+		self.c.execute(sql)
+		#return self.c.fetchone()[0]
+		self.currentid = self.c.fetchone()[0]
+		return self.currentid
+
+	def getnextURL(self, id):
+		sql="SELECT url FROM rapy WHERE id='%d'" % id
+		self.c.execute(sql)
+		return self.c.fetchone()[0]
+	
+	'''main run loop'''
+	def main(self):
+		import re
+		currentid = self.getnextidfromdb()
+		url = self.getnextURL(currentid)
+	
+		filename = url.split('/')[-1]
+		
+		limitrate = ''
+		if self.dlrate != 0:
+			limitrate = '--limi-rate=%dK' % self.dlrate
+
+		wgetcommand = '%(wget)s --load-cookies=/home/kru/temp/games/rapidsharecookie.txt -c %(rate)s %(url)s'\
+				% { 'wget':wget, 'rate':limitrate, 'url':url }
+		wgetproc = Popen(wgetcommand, shell=True, stdout=PIPE, stderr=PIPE)
+		procid = wgetproc.pid
+		
+		#print wgetproc.stdout.readline()
+		#print wgetproc.stderr
+		
+		output = wgetproc.stderr.readline()
+
+		while output != '':
+			if output.find('Length:') != -1:
+				length = output.split()[2]
+			if output.find('saved') != -1:
+				wgetproc.communicate()
+				break
+			if output.find('The file is already fully retrieved; nothing to do.') != -1:
+				wgetproc.communicate()
+				break
+			
+
+
+			dots = '.......... .......... .......... .......... ..........'
+			tokens = []
+			if output.find(dots) != -1:
+				tokens = output.split()
+
+				if len(tokens) == 9:
+					os.system('clear')
+					print "Status: %s %s/%s Speed:%s Remaining:%s\nFilename:%s" % (tokens[6], tokens[0],length, tokens[7], tokens[8], filename)
+			output = wgetproc.stderr.readline()
+			
+
+		if wgetproc.returncode != 0:
+			print wgetproc.returncode
+			print "done with error"
+			return 1
+		else:
+			self.dloadend(currentid)
+			return 0
+
+	'''get id from url'''
+	def getID(self, url):
+		sql = "SELECT id FROM rapy WHERE url='%s'" % url
+		self.c.execute(sql)
+		return self.c.fetchone()[0];
+	
+	'''set db value finished to 1'''
+	def dloadend(self, id):
+		sql="UPDATE rapy SET finished = '1' WHERE id='%d'" % id
+		if self.c.execute(sql):
+			self.connection.commit()
+		print "finished downloading and set to 1 (%s)" % sql
+
+	def dloaderr(self, id):
+		'''zeile hinten anfuegen und eintrag loeschen'''
+		print ''
+
+	def cleantable(self):
+		'''alle zeilen entfernen mit finished = 1'''
+		print ''
+	
+	'''end class'''
+
+r = rapy()
+#r.dloadend(r.getID('www.chao.ch/test'))
+#r.addMulti('/tmp/rapid')
+status = 0
+while status != 1:
+	print "loop"
+	r.getnextURL(r.getnextidfromdb())
+	status = r.main()
+
+#r.addLink('www.chao.ch/index.php')

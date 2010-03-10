@@ -1,0 +1,34 @@
+#!/bin/bash
+#uncomment if not set in e.g .bashrc
+#EDITOR=jed
+file=`basename $PWD`.install
+
+echo "pre_install() {" >> $file
+echo "  /bin/true"      >> $file
+echo -e "}\n\n"         >> $file
+
+echo "post_install() {" >> $file
+echo "   /bin/true"     >> $file
+echo -e "}\n\n"         >> $file
+
+echo "pre_upgrade() {"  >> $file
+echo "   /bin/true"     >> $file
+echo -e "}\n\n"         >> $file
+
+echo "post_upgrade() {"  >> $file
+echo "   /bin/true"     >> $file
+echo -e "}\n\n"         >> $file
+
+echo "pre_remove() {"  >> $file
+echo "   /bin/true"     >> $file
+echo -e "}\n\n"         >> $file
+
+echo "post_remove() {"  >> $file
+echo "   /bin/true"     >> $file
+echo -e "}\n\n"         >> $file
+
+echo "op=\$1"           >> $file
+echo "shift"            >> $file
+echo "\$op \$*"         >> $file
+
+$EDITOR $file

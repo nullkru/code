@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#config
+vbitrate="300kb" # 768kb 384kb 512kb usw 
+abitrate="64kb" # 32kb 64kb 128kb usw.
+size="320x240" #320x240 368x208
+MOREOPTS="$3 $4 $5 $6 $7 $8 $9"  #eg: -ss 00:10:00 -t 00:14:00 usw.
+#SAVEPATH="/home/kru/multimedia/movies/psp/"
+SAVEPATH='/media/sdb1/pspconverted/'
+#end
+
+
+
+[[ ! $@ ]] && echo -e "usage: $(basename $0) <moviefile> <title_without_spaces> \n edit values in:  $0 \n audio rate: $abitrate \n video rate: $vbitrate \n size: $size  \n extra options: $MOREOPTS" \n save path: $SAVEPATH && exit  
+
+
+originalfile=$1
+title=$2
+FILENAME=M4V$(printf '%05d' $RANDOM).MP4
+
+echo -e "rates: video rate: $vbitrate \n audio rate: $abitrate \n size: $size  \n extra option: $MOREOPTS \n save path: $SAVEPATH"
+sleep 2 && echo "GO..."
+
+ffmpeg -i $originalfile -vcodec mpeg4 -r 14.985 -s $size -b $vbitrate -ar 24000 -ab $abitrate -f psp $MOREOPTS -title "$title" $SAVEPATH$FILENAME
+
+
+#mencoder -endpos 00:20:00 -ofps 30000/1001  -af lavcresample=24000 -vf harddup \
+#-of lavf -oac lavc -ovc lavc \
+#-lavcopts vcodec=mpeg4:acodec=aac:abitrate=64:aglobal=1:vglobal=1 \
+#-vf scale=320:240 \
+#-lavfopts format=psp:i_certify_that_my_video_stream_does_not_use_b_frames \
+#-info name=$title $originalfile -o M4V10003.MP4
+
+filesize=$(du -sh $SAVEPATH$FILENAME | awk '{ print $1 }')
+echo -e "\n\n\n $title Saved as: $SAVEPATH$FILENAME \n ...and is $filesize \n move it to \$pspdir/mp_root/100mnv01/ \n\n"

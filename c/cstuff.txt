@@ -1,0 +1,5 @@
+gcc -Wall -ggdb src.c -o src
+oder 
+make src
+
+gdb programm-name

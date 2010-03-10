@@ -1,0 +1,21 @@
+HeaderName .HEADER.html
+ReadmeName .README.txt
+Indexoptions FancyIndexing VersionSort
+
+IndexOrderDefault Descending Date
+IndexOptions +DescriptionWidth=*
+
+AddType text/plain sh txt php sh pl c tcl h bat java py
+
+IndexIgnore .user .htaccess .HEADER.html .README.txt .style.css
+
+
+AddDescription "bash,awk,sed shell ... scripts" shell
+AddDescription "C source code" C
+AddDescription "Windows .bat files" cmd
+AddDescription "Perl scripts" perl
+AddDescription "php scripts" php
+AddDescription "set of tools (kware = kru ware not kde or something)" kware
+AddDescription "my personal bash functions file..." krufunctions.sh
+AddDescription "dead or not now finished projects" not_finished
+

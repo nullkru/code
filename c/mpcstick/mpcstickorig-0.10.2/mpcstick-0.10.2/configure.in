@@ -1,0 +1,22 @@
+AC_INIT(configure.in)
+AM_INIT_AUTOMAKE(mpcstick, "0.10.2", aaron@aaronbock.net)
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+PKG_CHECK_MODULES(GLIB, glib-2.0)
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
+ 
+AC_OUTPUT([
+	Makefile 
+	src/Makefile
+])
+
+echo "
+mpcstick-$VERSION:
+
+	prefix:   ${prefix}
+	compiler: ${CC}
+"
+

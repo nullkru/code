@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# taken from  http://www-106.ibm.com/developerworks/library/l-graf/?ca=dnt-428
+#
+size=($1)
+
+if [ "$1" = "" ]; then
+
+     mkdir converted 
+     for img in `ls *.jpg`;
+     do
+     convert -scale 640 -quality 85 $img converted/$img;
+     done;
+
+else
+
+     mkdir converted 
+     for img in `ls *.jpg`;
+     do
+     convert -sample $size -quality 85 $img converted/$img;
+     done;
+
+fi
+
+

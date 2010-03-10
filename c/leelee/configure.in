@@ -1,0 +1,52 @@
+AC_INIT
+
+PACKAGE=bot
+VERSION=0.01a
+
+AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
+
+AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
+
+AM_CONFIG_HEADER(config.h)
+
+AC_PROG_CC
+AC_LANG_C
+AC_PROG_MAKE_SET	
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
+AC_CHECK_LIB(pthread, pthread_create)
+AC_CHECK_LIB(dl, dlopen)
+AC_CHECK_LIB(tcl, Tcl_CreateInterp)
+AC_CHECK_LIB(ssl, SSL_library_init)
+
+ac_cv_debug="no"
+AC_MSG_CHECKING(whether to enable debugging mode)
+AC_ARG_ENABLE(debug,
+[  --enable-debug          debugging mode (default)
+  --disable-debug         production mode],
+[
+  case "$enableval" in
+    yes)
+      ac_cv_debug="yes"
+      ;;
+    no)
+      ac_cv_debug="no"
+      ;;
+  esac
+])
+
+AC_MSG_RESULT($ac_cv_debug)
+
+if test "$ac_cv_debug" = "yes"
+then
+  flags="-Wall -O0"
+  AC_DEFINE(DEBUG, 1, [Debugging mode])
+else
+  flags="-Wall -O3"
+fi
+
+AC_SUBST(flags)
+
+
+AC_OUTPUT(Makefile src/Makefile src/plugins/Makefile src/plugins/double_nick/Makefile src/plugins/seen/Makefile)

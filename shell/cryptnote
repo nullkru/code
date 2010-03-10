@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+# initialy you have to create the cryptnote file with:
+# gpg -r $KEYID $filename
+
+filename=.cryptnote
+KEYID=A8747586
+basedir=$HOME/
+tempdir=/tmp/
+
+function decrypt
+{
+	echo '* Open encrypted file'
+	gpg --output $tempdir/$filename $basedir/${filename}.gpg
+	chmod 600 $tempdir/$filename
+	vim $tempdir/$filename
+}
+
+function encrypt
+{
+	echo '* Encrypting file'
+	 gpg --no-tty --yes -r $KEYID -o $basedir/${filename}.gpg -e $tempdir/$filename
+	echo '* Deleting unencrypted file in $tempdir'
+	shred -u $tempdir/$filename
+}
+
+if [ ! -a ${tempdir}${filename} ];
+then
+	decrypt
+	encrypt
+else
+	echo "Sorry file already open"
+fi	

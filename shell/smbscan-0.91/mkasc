@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cat $1 | while read x; do printf "\x$x%b" | tr -d \\n  >> ./smbasc.$$; done 

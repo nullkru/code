@@ -1,0 +1,1 @@
+/* krus c function file */

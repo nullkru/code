@@ -1,0 +1,10 @@
+#!/bin/bash
+#/who +R scan
+now=`date +%T`
+mkdir "./log" &> /dev/null
+mkdir "./log/irc" &> /dev/null
+log="./log/irc/$now"
+mkdir $log
+ips="$log/ips.log"
+cat $1 | awk '{print $4}' | while read x; do echo ${x/*@/}; done | while read y; do echo ${y/\.*/}; done | tr - . > $ips
+cat $ips | while read x; do smbclient -L $x -N --user=administrator > $log/$x.log & done

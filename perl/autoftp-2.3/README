@@ -1,0 +1,63 @@
+This is the README file for autoftp.
+
+Author:
+
+   Adam Stein (adam@scan.mc.xerox.com)
+
+Copyright:
+
+  Copyright (c) 1999, 2002, 2004 Xerox Corporation.  All Rights Reserved.
+
+  Permission to use, copy, modify  and  distribute  without  charge
+  this  software,  documentation, images, etc. is granted, provided
+  that this copyright and the author's name is retained.
+
+  A fee may be charged for this program ONLY to recover  costs  for
+  distribution  (i.e.  media costs).  No profit can be made on this
+  program.
+
+  The author assumes no responsibility for  disasters  (natural  or
+  otherwise) as a consequence of use of this software.
+
+Description:
+
+  Autoftp is a program that can retrieve, send, or list files via
+  the FTP protocol in a non-interactive manner.
+
+Requirements:
+
+  This program requires Perl 5.004 or higher.  Also required are
+  the following Perl modules:
+
+	libnet		(v1.0606 or higher, located at a CPAN near you)
+
+  CPAN can be found at "http://www.cpan.org/".
+
+
+Installation:
+
+  This program has only been tested on a Solaris systems (running 2.6 and 8).
+  I don't believe there is anything that would prevent it from working with
+  any other version of Unix.
+
+  Change the first line in "autoftp" to reflect where Perl is installed
+  on your system.
+
+  Copy the autoftp program to your favorite bin directory (i.e. /usr/local/bin).
+
+  Copy the man page to your favorite manl directory and rename it as
+  appropriate for that directory (i.e. /usr/local/man/manl/autoftp.l)
+
+
+Bugs/Additions:
+
+  I would appreciate knowing about any bugs either found or
+  fixed and any enhancements made.  I would like to keep a
+  centralized version with the upgrades so that there aren't
+  50 million different versions.  I can't make any
+  guarantees to when bug fixes would be made (if any are
+  found :-{), but I'll do my best.
+
+  I hope this program is of use to you, either in it's capacity or as
+  an example in Perl programming.
+

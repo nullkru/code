@@ -1,0 +1,6 @@
+cmd invoke 2 Add_containers Quantity=40 Induction_point==WE00BB01.WG509 Label_barcode=AAA1801050301000 First_container_Id=100000000100000041 Induction_date=2008-04-03T08:00:00 
+
+cmd invoke 2 Add_containers Quantity=1500 Induction_point==WE00BB01.WG509 Label_barcode=AAB1801050301000 First_container_Id=100000000100001542 Induction_date=2008-04-03T08:00:00 
+
+cmd invoke 2 Add_containers Quantity=70 Induction_point==WE00BB01.WG509 Label_barcode=AAA1801050301000 First_container_Id=100000000100001613 Induction_date=2008-04-03T08:00:00 
+

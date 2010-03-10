@@ -1,0 +1,9 @@
+%c 	Einfaches Zeichen 	char blah;
+%d	Vorzeichenbehatete Dezimalzahl	int blah, short blah;
+%ld	long blah;
+%f	fliesskommazahl float, double
+%s	String	- char arrays;
+%u	vorzeichenlose ezimalzahl unsigned int, unsigned short
+%lu	Grosse vorzeichenlose Dezimalzahl unsigned long,
+
+

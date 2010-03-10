@@ -1,0 +1,67 @@
+#!/bin/bash
+
+MP3DIR="/home/kru/multimedia/music/TAGED/"
+TAGCLEAN="mp3cleaner *.mp3"
+
+
+function info()
+{
+	echo -e "\n[]=====================>$1"
+}
+
+# end config
+curdir=$1
+cd $curdir
+info "current dir: $curdir"
+sleep 1
+$TAGCLEAN
+
+
+#Get informations 
+artist=$(id3info *01*mp3 | grep TPE1 | sed  's/=== TPE1 (Lead performer(s)\/Soloist(s)): //g' | \
+	tr [A-Z] [a-z] | sed 's/ /_/g' )
+
+if [[ ! -d $MP3DIR/$artist ]]; then
+	info "No artist directory found."
+	info "creating $MP3DIR/$artist"
+	mkdir $MP3DIR/$artist
+else
+	info "Artist directory found!"
+	info $MP3DIR/$artist
+fi
+
+	
+albumdir=$(id3info *01*mp3 | grep TALB | sed  's/=== TALB (Album\/Movie\/Show title): //g' \
+	   | tr [A-Z] [a-z] | sed 's/ /_/g' )
+
+if [[ ! -d $MP3DIR/$artist/$albumdir ]]; then
+	info "No album directory found."
+	info "creating $albumdir"
+	mkdir $albumdir
+else
+	info "Album directory exists!!! exiting"
+	exit
+fi
+
+mv *.mp3 $albumdir
+chmod -R 664 $albumdir/*.mp3
+
+info "$albumdir created and mp3's moved... "
+
+info "Move to mp3 directory"
+mv $albumdir $MP3DIR/$artist/
+
+answer=n
+echo -n "Should i remove: $curdir [y/N]: "
+read answer
+
+if [[ "$answer" != "y" ]]; then
+	exit
+else
+	cd ..
+	rm -rf $curdir
+	echo "done!"
+fi
+cd ..
+
+info "Enjoy your new $artist album!"

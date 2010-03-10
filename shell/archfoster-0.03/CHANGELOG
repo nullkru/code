@@ -1,0 +1,4 @@
+Version:
+0.01: ask you all installet packages
+0.02: ask by default only explicitly installed packages and have option for
+all.

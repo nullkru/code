@@ -1,0 +1,5 @@
+- globale konfiguration /etc/
+- user kann zwischen vordefinierten netwerken auswählen dannach wird iwconfig, dhclient usw verwendet
+- oder kann sich abfragen lassen.
+- 
+

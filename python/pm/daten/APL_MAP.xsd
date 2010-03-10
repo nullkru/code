@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 U (http://www.altova.com) by Rainer Blickle (Siemens AG, Logistics and Assembly Systems) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.post.ch/ids/apl" targetNamespace="http://www.post.ch/ids/apl" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="APL_MAP">
+		<xs:annotation>
+			<xs:documentation>Analysis and Planning sends information for each of 9 centers.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="BZ" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>The BZ where the xml data is assigned to</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="PLZ" type="xs:int">
+								<xs:annotation>
+									<xs:documentation>The 6-digit-postcode of the BZ.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Transport" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="ArrivalTime" type="xs:dateTime"/>
+										<xs:element name="ID" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>The human-readable Name for this Transport</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="Amount" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>"Verarbeitungs Produkt" defines product, handling, and speed for the mail.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:all>
+													<xs:element name="Vap">
+														<xs:annotation>
+															<xs:documentation>the first 3 digits of the BB lable</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:length value="3"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="Count" type="xs:int">
+														<xs:annotation>
+															<xs:documentation>Amount of the VAP for this transport. The value of the Amount is in items.</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:all>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

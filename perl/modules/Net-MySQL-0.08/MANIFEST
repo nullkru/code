@@ -1,0 +1,8 @@
+Changes
+Makefile.PL
+MANIFEST
+MySQL.pm
+README
+t/0.load.t
+t/1.password.t
+script/mysql.pl

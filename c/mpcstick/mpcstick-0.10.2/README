@@ -1,0 +1,22 @@
+mpcstick (Music Player Daemon Client)
+Copyright (C) 2004 Aaron Bockover
+
+mpcstick is a simple MPD (Music Player Daemon, http://www.musicpd.org)
+client. It runs as either a daemon or in standalone mode, and is able
+to control simple features of an MPD server through Linux joystick devices.
+
+MPD features supported in mpcstick:
+
+  * Play/Pause
+  * Stop
+  * Next/Previous
+  * Seek in track (rewind/fast-forward)
+  * Volume Up/Down
+
+mpcstick is released under the GNU General Public License (version 2.0)
+	http://www.gnu.org/licenses/gpl.txt
+
+For more information, please contact the mpcstick author, Aaron Bockover
+via email at <aaron@aaronbock.net>
+
+

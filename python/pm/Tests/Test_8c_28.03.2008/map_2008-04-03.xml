@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<APL_MAP xmlns="http://www.post.ch/ids/apl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.post.ch/ids/apl APL_MAP.xsd">
+	<BZ>
+		<PLZ>801050</PLZ>
+		<Transport>
+			<ArrivalTime>TIMESTAMP</ArrivalTime>
+			<ID>Transport</ID>
+		<Amount>
+			<Vap>AAA</Vap>
+			<Count>10</Count>
+		</Amount>
+		<Amount>
+			<Vap>BAA</Vap>
+			<Count>0</Count>
+		</Amount>
+		<Amount>
+			<Vap>EAA</Vap>
+			<Count>0</Count>
+		</Amount>
+		<Amount>
+			<Vap>FAA</Vap>
+			<Count>0</Count>
+		</Amount>
+		</Transport>
+	</BZ>
+</APL_MAP>

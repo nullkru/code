@@ -1,0 +1,40 @@
+Verwaltungssystem für die Tabellen einer Datenbank.
+
+Das Skript kann frei verwendet werden, ich gewähre aber weder
+Funktionsgarantie noch hafte ich für irgendwelche Schäden,
+die sich aus der Benutzung dieses Skriptes ergeben.
+
+Johann-Christian Hanke
+http://www.phpkid.de
+01/2004
+
+Das müssen Sie konfigurieren:
+
+----------------------------------
+Benutzernamen und Kennwort für das Einloggen:
+
+Die legen Sie fest in userdata.inc.php
+Voreingestellt ist 
+- user
+- intern
+
+----------------------------------
+Namen der Datenbank festlegen in
+dbname.inc.php
+
+Voreingestellt ist 
+- kunden
+
+----------------------------------
+
+Zugriffsdaten auf die Datenbank festlegen in
+zugriff.inc.php
+
+Voreingestellt ist
+- root
+- kein Kennwort
+
+Datenbankname
+
+- kunden
+

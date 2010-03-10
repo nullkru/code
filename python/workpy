@@ -1,0 +1,30 @@
+#!/usr/bin/python
+timefile = "/home/kru/timer"
+
+class worker:
+	timestamp = 0
+	file = 0
+
+	def __init__(self):
+		worker.file = timefile
+		worker.timestamp = self.ts()
+	def ts(self):
+		import time
+		date = time.strftime("%d.%m.%Y")
+		time = time.strftime("%H:%M:%S")
+		self.timestamp = "%s time:%s" % (date, time)
+	def __getitem__(self,note):
+		try:
+			f = open(worker.file,"a")
+			f.write("%s\n\tnote:%s\n" % (self.timestamp, note))
+			f.close()
+		except:
+			print "Error writing %s file" % self.file
+
+try:
+	w = worker()
+	w[raw_input('tell me what you do:\n->')]
+except:
+	import traceback
+	traceback.print_exc()
+	print "hewwww. error"
