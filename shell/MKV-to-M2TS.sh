@@ -260,7 +260,7 @@ if [ "${SUBS_ID}" != "" ]; then
 fi
 
 # For debugging
-#cat ${META_FILENAME}
+cat ${META_FILENAME}
 
 # Convert the MKV to M2TS
 tsMuxeR ${META_FILENAME} ${M2TS_FILENAME}
