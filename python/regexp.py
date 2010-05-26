@@ -3,11 +3,11 @@
 import re
 
 #text = "2 3 asdf.php?test=yay 6"
-text = '4/22'
+text = ('blahbleh.jpg' 'miau.gif')
 #m = re.match("\d", text)
-m = re.match("(\d*)\/\d*", text)
+m = re.match(".*\.(jpg|JPG|png|PNG|jpeg|gif)", text)
 
 if m:
-	print m.group(1)
+	print m.group(0)
 else:
 	print "nothing found..."

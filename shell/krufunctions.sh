@@ -272,6 +272,12 @@ khostup()
 	fi
 }
 
+serienplay() {
+	_dirname=$(basename $PWD)
+	
+	echo $@ >> $_dirname
+	mplayer $@
+}
 
 ### EOF          
 
