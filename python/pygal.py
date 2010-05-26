@@ -26,17 +26,17 @@ class pygal(object):
 			<html>\n \
 				<head>\n \
 					<title>[title]</title>\n \
-					<!--<link href='css/snip.style.css' rel='stylesheet' media='screen' />-->\n \
+					<link href='../style.css' rel='stylesheet' media='screen' />\n \
 					<script src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>\n \
 					<script src='../galleria/src/galleria.js'></script>\n \
 					<script>Galleria.loadTheme('../galleria/src/themes/classic/galleria.classic.js');</script>\n \
 				</head>\n \
 				<body>\n \
 					<h2>[title]</h2> \n \
+					<script>$('.images').galleria({height: 650});</script>\n \
 					<div class='images'>\n \
 						[imglist] \
 					</div>\n \
-					<script>$('.images').galleria();</script>\n \
 				</body>\n \
 			</html>\n"
 
@@ -51,6 +51,38 @@ class pygal(object):
 				self.Pics.append(i)
 
 		pygal.picArr = self.Pics
+
+	def maxSize(self, image, maxSize, method = 3):
+		imAspect = float(image.size[0])/float(image.size[1])
+		outAspect = float(maxSize[0])/float(maxSize[1])
+
+		if imAspect >= outAspect:
+			return image.resize((maxSize[0], int((float(maxSize[0])/imAspect) + 0.5)), method)
+		else:
+			return image.resize((int((float(maxSize[1])*imAspect) + 0.5), maxSize[1]), method)
+
+	# process (rotate/resize) images 
+	def processImages(self):
+		print "Processing images..."
+		from PIL import Image
+		from PIL.ExifTags import TAGS
+		for i in self.picArr:
+			print "rotating and resizing %s" % i
+			img = Image.open(i)
+			exif = img._getexif()
+			if exif != None:
+				for tag,value in exif.items():
+					decoded = TAGS.get(tag,tag)
+					if decoded == 'Orientation':
+						if value == 3: img = img.rotate(180)
+						if value == 6: img = img.rotate(270)
+						if value == 8: img = img.rotate(90)
+						break
+			img = self.maxSize(img,(1024,768), Image.ANTIALIAS)
+			img.save(i,'JPEG',quality=100)
+
+		print "Done processing images!"
+
 
 	def createThumbs(self):
 		import Image
@@ -78,6 +110,7 @@ class pygal(object):
 	def createGal(self):
 		print "Creating Gallery %s" % pygal.name
 		self.getPics()
+		self.processImages()
 		#self.createThumbs()
 		self.createHtml()
 		f = open(self.FILE,"w")
