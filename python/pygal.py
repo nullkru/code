@@ -29,14 +29,14 @@ class pygal(object):
 					<!--<link href='css/snip.style.css' rel='stylesheet' media='screen' />-->\n \
 					<script src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>\n \
 					<script src='../galleria/src/galleria.js'></script>\n \
-					<script>Galleria.loadTheme('../galleria/themes/galleria.classic.js');</script>\n \
-					<script>$('.images').galleria();</script>\n \
+					<script>Galleria.loadTheme('../galleria/src/themes/classic/galleria.classic.js');</script>\n \
 				</head>\n \
 				<body>\n \
 					<h2>[title]</h2> \n \
 					<div class='images'>\n \
 						[imglist] \
 					</div>\n \
+					<script>$('.images').galleria();</script>\n \
 				</body>\n \
 			</html>\n"
 
