@@ -78,8 +78,8 @@ class pygal(object):
 						if value == 6: img = img.rotate(270)
 						if value == 8: img = img.rotate(90)
 						break
-			img = self.maxSize(img,(1024,768), Image.ANTIALIAS)
-			img.save(i,'JPEG',quality=100)
+			img = self.maxSize(img,(800,600), Image.ANTIALIAS)
+			img.save(i,'JPEG',quality=95)
 
 		print "Done processing images!"
 
@@ -94,11 +94,11 @@ class pygal(object):
 
 	def createHtml(self):
 		print "Generating html index"
-		linetmpl = "<img src='%s' alt='%s'>\n"
+		linetmpl = "<img src='%s' alt='%s %s'>\n"
 		
 		self.images = ""
 		for i in pygal.picArr:
-			 self.images += linetmpl % (i,i)
+			 self.images += linetmpl % (i,self.name,i)
 		
 		title = re.compile('\[title\]')
 		self.tmpl = title.sub(self.name,self.tmpl)
