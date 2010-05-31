@@ -49,7 +49,7 @@ class cleaner(object):
 		except: self.x['album'] = 'na'
 
 		try: x['tracknumber'] = x['tracknumber']
-		except: self.x['track'] = 'na'
+		except: self.x['tracknumber'] = 'na'
 
 		try: x['date'] = x['date']
 		except: self.x['date'] = 'na'
