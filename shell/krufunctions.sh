@@ -105,7 +105,9 @@ PROMPT_COMMAND='kill -WINCH $$ '
 #PROMPT_COMMAND='echo -ne "k\\"' # <esc>k<esc>\ used to set  screen title dynamic
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
-shopt -s checkwinsize
+if [ "$SHELL" = "/bin/bash" ]; then
+	shopt -s checkwinsize
+fi
 
 ##
 # make flags
@@ -121,13 +123,13 @@ kps() { ps ax | grep -v grep | grep -v kps | grep $@ | awk '{ print $1 }' ; }
 #kill a process with fuck <appname>
 fuck() 
 {
-	[[ ! $@ ]] && echo "usage: fuck <command> or fuck you to shutdown" && return 1
+	[[ ! "$@" ]] && echo "usage: fuck <command> or fuck you to shutdown" && return 1
 	local x=$@
 	# wish from iwan.chao.ch ;)  
 	if [[ `echo $x` = "you" ]]; then
 		echo -e "Are you shure you want to shutdown[y/N]?\c "
 		read answer
-		if [[ `echo $answer` = "y" ]]; then
+		if [[ "$(echo $answer)" = "y" ]]; then
 			shutdown -h 0
 		else
 			return
