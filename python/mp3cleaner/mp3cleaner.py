@@ -4,8 +4,7 @@
 Depencies:
 	PIL : python image library
 	mutagen : python metadata tag reader/writer
-TODO:
-	+ output format definieren in config %a_-_%t_-_usw
+TODO: + output format definieren in config %a_-_%t_-_usw
 	+ compilation mode and enhanced mode ( title, trackno ...) 
 	+ better class... 
 	+ code cleanup
@@ -70,7 +69,8 @@ class cleaner(object):
 	def resizeCover(self, coverfile):
 		img = Image.open(coverfile)
 		coverout = img.resize((300,300), Image.ANTIALIAS)
-		filename = '%s' % coverfile.lower()
+		#filename = '%s' % coverfile.lower()
+		filename = 'folder.jpg'
 		coverout.save(filename)
 		return filename
 
@@ -305,3 +305,4 @@ if __name__ == "__main__":
 		import traceback
 		traceback.print_exc()
 		print 'omfg error'
+		sys.exit(1)

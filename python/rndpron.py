@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #path = '/mnt/data/movies/norp/new'
-path = '/home/kru/multimedia/movies/.norp'
+path = '/mnt/cube//multimedia/movies/.norp/new'
 player = 'mplayer -fs '
 
 import random, os, dircache

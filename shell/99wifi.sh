@@ -20,8 +20,6 @@ IF=$1
 STATUS=$2
 logfile=/var/log/nm-dispatcher
 
-echo $@ >> $logfile
-
 wait_for_process() {
   PNAME=$1
   PID=$(/usr/bin/pgrep $PNAME)
@@ -32,19 +30,25 @@ wait_for_process() {
   done
 }
 
+logthis() {
+	echo "$(date): $@" >> $logfile
+}
+
 wait_for_connection() {
 	state=unavailable
 	while [[ "$state" != "connected" ]]; do
 		state=$(nm-tool | grep -A3 $IF | awk '/State/ { print $2 }')
-		sleep 2
+		sleep 1
 	done
 }
+
+logthis $@
 
 #wifi scripts
 if [ "$IF" = "wlan0" ]; then
 	curEssid=$(cat /tmp/essid 2> /dev/null)
 	if [ -z "$curEssid"  ]; then
-		echo wait for connection >> $logfile
+		logthis "Waiting for connection..."
 		wait_for_connection
 		ESSID=$(iwconfig $IF | sed -r -n '/SSID/{s/.*SSID:"([^"]+)".*/\1/g;p;q}')
 		echo $ESSID > /tmp/essid
@@ -54,5 +58,5 @@ if [ "$IF" = "wlan0" ]; then
 	fi
 
 	eval ${ESSID}_action $STATUS
-	echo "$(date): runned ${ESSID}_action $STATUS" >> $logfile
+	logthis "called ${ESSID}_action $STATUS"
 fi
