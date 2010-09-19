@@ -1,58 +1,15 @@
 #!/usr/bin/python
 
-import os, sys, pwd
-
-blah = "ha ha string"
-
-print blah+"asdfadsf"
-
-
-sys.stdout.write("bleh out\n")
-
-def something(text):
-	print text
-
-
-
-something("things goes wrong\n\n")
-
-i = 23
-
-if i != "24":
-	print 'sorry "i" ist nicht 24'
-
-
-print 'blah %s' % i
-
-
-
-
-
-
-array = [' blah', 'bleh ', 'blih']
-
-#letztes zeichen eines wertes ausgeben... 
-
-for word in array:
-	if word[0] == ' ':
-		print 'space is there'
-	
-	length = len(word)
-	char = word[0:length-1]
-	print 'last char:'+ char
-
-
-
-
-
-haha = 'miau'
-print haha
-haha += 'blah'
-print haha
-
-def fucker(s):
-	s.replace('a','fuck')
-	return s
-
-einevar = "aoiuua"
-einevar.fucker()
+blah = [3,4,2,5]
+anz = len(blah)-1
+n = anz
+while n is not 0 :
+	print "%d > %d" % (blah[n],blah[n-1])
+	if blah[n] > blah[n-1] :
+		z = blah[n]
+		blah[n] = blah[n-1]
+		blah[n-1] = z
+		n = anz
+	else:
+		n-=1
+	print blah

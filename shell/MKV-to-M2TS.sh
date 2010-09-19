@@ -173,7 +173,7 @@ else
     MKV_FILENAME=${1}
         
     # Is the .mkv a real Matroska file?
-    MKV_VALID=`file ${MKV_FILENAME} | grep Matroska`
+    MKV_VALID=`file ${MKV_FILENAME} | grep data` #| grep Matroska`
     if [ -z "${MKV_VALID}" ]; then
         echo "ERROR! ${0} requires valid a Matroska file as input. \"${1}\" is not a Matroska file."
         usage
