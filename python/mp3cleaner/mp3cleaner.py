@@ -146,6 +146,7 @@ class cleaner(object):
 			'\xc3\xa7': 'c', #ç
 			'&': 'and',
 			'?':'',
+			'!':'',
 			' ': '_',
 			"'":'',
 			'`': '',
@@ -177,10 +178,10 @@ class cleaner(object):
 	discnumberOK = 0
 	def askParams(self, quiet=1):
 		new = {}
-		if self.x['title'] == 'na':
+		if self.x['title'] == 'na' or not quiet:
 			new['title'] = raw_input('Title (%s):' % self.x['title'][0])
 		
-		if self.x['tracknumber'] == 'na':
+		if self.x['tracknumber'] == 'na' or not quiet:
 			new['track'] = raw_input('Track # (%s):' % self.x['tracknumber'][0])
 	
 		if not cleaner.compilation:
@@ -306,6 +307,7 @@ class cleaner(object):
 			self.newFilename(file, test)
 
 	def isSingle(self, file, test=0):
+		self.album = 0
 		self.getMp3info(file)
 		self.askParams(0)
 		b = self.basedata

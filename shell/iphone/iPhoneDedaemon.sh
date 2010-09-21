@@ -17,7 +17,12 @@ daemons="com.apple.syslogd.plist \
 	com.apple.tcpdump.server.plist \
 	com.apple.mobile.profile_janitor.plist \
 	com.apple.chud.chum.plist \
-	com.apple.chud.pilotfish.plist"
+	com.apple.chud.pilotfish.plist \
+	com.apple.psctl.plist \
+	com.apple.apsd.tcpdump.pdp_ip0.plist \
+	com.apple.apsd.tcpdump.en0.plist \
+	com.apple.AOSNotification.plist \
+	com.apple.racoon.plist"
 
 function unload() {
 	for i in $daemons

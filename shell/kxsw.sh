@@ -10,6 +10,7 @@ placement="--right-of"
 mode="--auto"
 #end config
 
+#clone xrandr --output LVDS1 --auto --output VGA1 --auto --same-as LVDS1
 
 
 vga0=$(xrandr | grep VGA | cut -f 2 -d " ")
@@ -22,9 +23,10 @@ then
 		echo "Second monitor allready activated, exiting..."
 		exit 0
 	else
-		echo "Activating second monitor..."
-		xrandr --output $extdev $mode $placement $internaldev
+		echo "Activating second monitor right of $internaldev..."
+		#xrandr --output $extdev $mode $placement $internaldev
 		#echo "restarting xfce panel"
+		xrandr --output LVDS1 --auto --output VGA1 --auto --same-as LVDS1
 		xfce4-panel -r
 		#nm-applet >& /dev/null &
 	fi

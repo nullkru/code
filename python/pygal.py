@@ -11,7 +11,7 @@ class pygal(object):
 		import getopt
 
 		from optparse import OptionParser
-		usage = "usage: %prog [options]"
+		usage = "usage: %prog <images> [options]"
 		parser = OptionParser(usage)
 		parser.add_option('-n', dest="name", help="set gallery name")
 		parser.add_option('-f', dest="filename", help='html output file')
