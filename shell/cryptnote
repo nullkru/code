@@ -3,9 +3,9 @@
 # initialy you have to create the cryptnote file with:
 # gpg -r $KEYID $filename
 
-filename=.cryptnote
+filename=cryptnote
 KEYID=A8747586
-basedir=$HOME/
+basedir=$HOME/data/notes/
 tempdir=/tmp/
 
 function decrypt
