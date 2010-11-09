@@ -197,7 +197,7 @@ class cleaner(object):
 			new['performer'] = cleaner.compilationperformer
 
 		if not cleaner.compilationalbum:
-			new['album'] = raw_input('Album (%s):' % self.x['album'][0])
+			new['album'] = raw_input('Album (%s):' % self.x[u'album'][0])
 			if not new['album']:
 				new['album'] = self.x['album'][0]
 		else:
