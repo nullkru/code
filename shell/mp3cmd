@@ -1,12 +1,12 @@
 #!/bin/bash
 
-MP3DIR="/home/kru/multimedia/music/TAGED/"
+MP3DIR="/home/kru/multimedia/music/"
 TAGCLEAN="mp3cleaner *.mp3"
 
 
 function info()
 {
-	echo -e "\n[]=====================>$1"
+	echo -e "[]=====================>$1"
 }
 
 # end config
@@ -15,6 +15,12 @@ cd $curdir
 info "current dir: $curdir"
 sleep 1
 $TAGCLEAN
+
+if [[ $? == 1 ]]; then
+	info "Error from mp3cleaner... exiting"
+	exit 1
+fi
+
 
 
 #Get informations 
@@ -43,8 +49,8 @@ else
 	exit
 fi
 
-mv *.mp3 $albumdir
-chmod -R 664 $albumdir/*.mp3
+chmod 755 $albumdir ; mv *.mp3 *.jp*g $albumdir
+chmod -R 664 $albumdir/*
 
 info "$albumdir created and mp3's moved... "
 

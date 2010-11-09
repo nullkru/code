@@ -1,11 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 #-*- coding: UTF-8 -*-
 '''
 Depencies:
 	PIL : python image library
 	mutagen : python metadata tag reader/writer
-TODO:
-	+ output format definieren in config %a_-_%t_-_usw
+TODO: + output format definieren in config %a_-_%t_-_usw
 	+ compilation mode and enhanced mode ( title, trackno ...) 
 	+ better class... 
 	+ code cleanup
@@ -49,17 +48,25 @@ class cleaner(object):
 		except: self.x['album'] = 'na'
 
 		try: x['tracknumber'] = x['tracknumber']
-		except: self.x['track'] = 'na'
+		except: self.x['tracknumber'] = 'na'
 
 		try: x['date'] = x['date']
 		except: self.x['date'] = 'na'
+		
+		if self.compilation:
+			try: x['performer'] = x['performer']
+			except: self.x['performer'] = 'na'
+			try: x['discnumber'] = x['discnumber']
+			except: self.x['discnumber'] = 'na'
 
 		try: x['genre'] = x['genre']
 		except: self.x['genre'] = 'na'
+
 		#search for cover
 		self.getCover()
 	
 	albumArt = 0
+
 	def getCover(self):
 		CoversInDir = os.listdir(os.getcwd())
 		for cover in CoversInDir:
@@ -70,7 +77,8 @@ class cleaner(object):
 	def resizeCover(self, coverfile):
 		img = Image.open(coverfile)
 		coverout = img.resize((300,300), Image.ANTIALIAS)
-		filename = '%s' % coverfile.lower()
+		#filename = '%s' % coverfile.lower()
+		filename = 'folder.jpg'
 		coverout.save(filename)
 		return filename
 
@@ -91,9 +99,9 @@ class cleaner(object):
 		)
 		audio.save()
 
-	def setMp3info(self, artist=0, album=0, date=0, title=0, track=0, genre=0,discnumber=0):
+	def setMp3info(self, artist=0, album=0, date=0, title=0, track=0, genre=0):
 		b = self.basedata
-		
+
 		if artist: 
 			self.x['artist'] = u'%s' % artist
 		
@@ -112,11 +120,14 @@ class cleaner(object):
 		if genre:
 			self.x['genre'] = u'%s' % genre
 
-		if discnumber:
-			self.x['discnumber'] = u'%s' % discnumber
 
-		if cleaner.compilation:
+		if self.compilation:
 			self.x['compilation'] = u'1'
+			self.x['discnumber'] = u'%s' % self.compilationdisc 
+
+		if self.compilationperformer:
+			self.x['performer'] = b['performer']
+			
 
 		self.x.save()
 
@@ -135,6 +146,7 @@ class cleaner(object):
 			'\xc3\xa7': 'c', #ç
 			'&': 'and',
 			'?':'',
+			'!':'',
 			' ': '_',
 			"'":'',
 			'`': '',
@@ -162,18 +174,27 @@ class cleaner(object):
 		name = name.strip()
 		return name
 
+	albumArtChoosen = 0
+	discnumberOK = 0
 	def askParams(self, quiet=1):
 		new = {}
-		if self.x['title'] == 'na':
+		if self.x['title'] == 'na' or not quiet:
 			new['title'] = raw_input('Title (%s):' % self.x['title'][0])
 		
-		if self.x['tracknumber'] == 'na':
+		if self.x['tracknumber'] == 'na' or not quiet:
 			new['track'] = raw_input('Track # (%s):' % self.x['tracknumber'][0])
 	
 		if not cleaner.compilation:
 			new['artist'] = raw_input('Artist (%s):' % self.x['artist'][0])
 			if not new['artist']:
 				new['artist'] = self.x['artist'][0]
+
+		if not cleaner.compilationperformer and self.compilation:
+			new['performer'] =  raw_input('Album Artist (Performer) (%s):' % self.x['performer'][0])
+			if not new['performer']:
+				new['performer'] = self.x['performer'][0]
+		else:
+			new['performer'] = cleaner.compilationperformer
 
 		if not cleaner.compilationalbum:
 			new['album'] = raw_input('Album (%s):' % self.x['album'][0])
@@ -195,18 +216,22 @@ class cleaner(object):
 				new['genre'] = self.x['genre'][0]
 		else:
 			new['genre'] = cleaner.compilationgenre
-
-		new['cover'] = raw_input('Front Cover (%s):' % self.albumArt)
-		if not new['cover']:
+		
+		if not self.albumArtChoosen:
+			new['cover'] = raw_input('Front Cover (%s):' % self.albumArt)
+			self.albumArtChoosen = 1 # don't ask again for compilations
+		else:
 			new['cover'] = self.albumArt
 
-		#if cleaner.compilation:
-		#	new['discnumber'] = raw_input('Compilation Disc no. (eg.1/3) (%s): ' % self.x['discnumber'][0])
-		#	if not new['discnumber']:
-		#		new['discnumber'] = self.x['discnumber'][0]
+		if cleaner.compilation and not self.discnumberOK:
+			new['discnumber'] = raw_input('Compilation Disc no. (eg.1/3) (%s): ' % self.x['discnumber'][0])
+			self.discnumberOK = 1
+			if not new['discnumber']:
+				new['discnumber'] = self.x['discnumber'][0]
 
 		#write the infos to the basedata class var
 		self.basedata = new	
+		
 
 	def newFilename(self, file=0, test=0):
 		x = self.x
@@ -256,6 +281,9 @@ class cleaner(object):
 	compilationalbum = 0
 	compilationdate = 0
 	compilationgenre = 0
+	compilationperformer = 0
+	compilationdisc = 0
+
 	def isCompilation (self, fileList, test=0):
 		fileList.pop(0)
 		for file in fileList:
@@ -267,6 +295,10 @@ class cleaner(object):
 				cleaner.compilationdate = self.basedata['date']
 			if not cleaner.compilationgenre:
 				cleaner.compilationgenre = self.basedata['genre']
+			if not cleaner.compilationperformer:
+				cleaner.compilationperformer = self.basedata['performer']
+			if not cleaner.compilationdisc:
+				cleaner.compilationdisc = self.basedata['discnumber']
 			b = self.basedata
 			if not test:
 				self.setMp3info(0, b['album'], b['date'], 0, 0, b['genre'])
@@ -275,6 +307,7 @@ class cleaner(object):
 			self.newFilename(file, test)
 
 	def isSingle(self, file, test=0):
+		self.album = 0
 		self.getMp3info(file)
 		self.askParams(0)
 		b = self.basedata
@@ -305,3 +338,4 @@ if __name__ == "__main__":
 		import traceback
 		traceback.print_exc()
 		print 'omfg error'
+		sys.exit(1)
