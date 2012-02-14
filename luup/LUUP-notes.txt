@@ -1,0 +1,7 @@
+über develop apps testen:
+
+local tmpVar = luup.variable_get("urn:micasaverde-com:serviceId:LightSensor1","CurrentLevel",88);
+luup.log("MIRKTEST: " .. tmpVar );
+
+ 
+
