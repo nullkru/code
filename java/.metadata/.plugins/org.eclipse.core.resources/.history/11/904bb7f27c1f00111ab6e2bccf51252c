@@ -1,0 +1,25 @@
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class FormContainer {
+	
+	private List<Form> lstForm; //Array welches "form"-Objekte beinhaltet
+	
+	public FormContainer(){
+		lstForm = new ArrayList<Form>();
+	}
+	
+	public void add(Form f) {
+				lstForm.add(f);
+				System.out.println("Form zu Array hinzugefügt!");
+	}
+
+	public double gesamtFlaeche() {
+		double summe;
+		for(Form f : lstForm)
+	}
+
+}
+
+

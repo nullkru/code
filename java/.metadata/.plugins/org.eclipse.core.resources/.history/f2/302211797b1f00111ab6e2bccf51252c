@@ -1,0 +1,16 @@
+
+public class FormContainer {
+
+	public void add(Kreis kr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Object gesamtFlaeche() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
+
+

@@ -1,0 +1,4 @@
+#Mon Dec 05 20:58:09 CET 2011
+browsers=<?xml version\="1.0" encoding\="UTF-8"?>\n<web-browsers current\="2">\n<system/>\n<external location\="/usr/bin/firefox" name\="Firefox"/>\n<external location\="/usr/bin/chromium" name\="chrome" parameters\=" %URL%"/>\n</web-browsers>
+browser-choice=1
+eclipse.preferences.version=1

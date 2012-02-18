@@ -1,0 +1,18 @@
+
+public class FormContainer extends Formdemo {
+
+	private Form fc[] = new Form[10];
+		int count = 0;
+		void add(Form f){ 
+			fc [count] = f;
+			count++;
+}
+
+	// double gesamtFlaeche(){
+		//double gesamtFlaeche = 0; // 
+			//cont.gesamtflaeche();
+				//cont.gesamtFlaeche(fc);
+				
+	}
+// }
+
