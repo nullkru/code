@@ -109,7 +109,7 @@ class cleaner(object):
 			self.x['title'] = u'%s' % title
 		
 		if album:
-			self.x['album'] = u'%s' % album
+			self.x['album'] = u'%s' % album  #.decode('utf-8')
 		
 		if track and track != self.x['tracknumber']:
 			self.x['tracknumber'] = track
@@ -179,7 +179,8 @@ class cleaner(object):
 	def askParams(self, quiet=1):
 		new = {}
 		if self.x['title'] == 'na' or not quiet:
-			new['title'] = raw_input('Title (%s):' % self.x['title'][0])
+			try: new['title'] = raw_input('Title (%s):' % self.x['title'][0])
+			except: new['title'] = raw_input('Title (%s):' % self.x['title'][0].encode('utf-8'))
 		
 		if self.x['tracknumber'] == 'na' or not quiet:
 			new['track'] = raw_input('Track # (%s):' % self.x['tracknumber'][0])
@@ -197,7 +198,7 @@ class cleaner(object):
 			new['performer'] = cleaner.compilationperformer
 
 		if not cleaner.compilationalbum:
-			new['album'] = raw_input('Album (%s):' % self.x[u'album'][0])
+			new['album'] = raw_input('Album (%s):' % self.x['album'][0]) #.encode('latin-1'))
 			if not new['album']:
 				new['album'] = self.x['album'][0]
 		else:

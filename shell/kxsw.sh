@@ -24,9 +24,9 @@ then
 		exit 0
 	else
 		echo "Activating second monitor right of $internaldev..."
-		#xrandr --output $extdev $mode $placement $internaldev
+		xrandr --output $extdev $mode $placement $internaldev
 		#echo "restarting xfce panel"
-		xrandr --output LVDS1 --auto --output VGA1 --auto --same-as LVDS1
+		#xrandr --output LVDS1 --auto --output VGA1 --auto --same-as LVDS1
 		xfce4-panel -r
 		#nm-applet >& /dev/null &
 	fi

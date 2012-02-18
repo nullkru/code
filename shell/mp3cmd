@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MP3DIR="/home/kru/multimedia/music/"
+MP3DIR="/home/kru/multimedia/music"
 TAGCLEAN="mp3cleaner *.mp3"
 
 

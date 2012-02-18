@@ -3,11 +3,13 @@ local motionSens = 40 -- id -> mirkMotionSensor
 local roomLight = 34 -- id -> mirkHauptDimmer
 local lightSens = 41 -- id -> mirkLightSensor
 
+
 local SS_SID = "urn:micasaverde-com:serviceId:SecuritySensor1" -- Security Sensor Service ID
-local SS_SIA = "urn:upnp-org:serviceId:SwitchPower1" -- Lamp Sensor Service ID -> mirkHauptDimmer
+local SS_SP = "urn:upnp-org:serviceId:SwitchPower1" -- Lamp Sensor Service ID -> mirkHauptDimmer
+local SID_VS = "urn:upnp-org:serviceId:VSwitch1" -- Virtual Switch
 
 local armed = luup.variable_get (SS_SID, "Armed", motionSens)
-local skip = luup.variable_get("urn:upnp-org:serviceId:VSwitch1","Status",44)
+local autoScnIndicator = luup.variable_get("urn:upnp-org:serviceId:VSwitch1","Status",44)
 local lightLevel = luup.variable_get("urn:micasaverde-com:serviceId:LightSensor1","CurrentLevel",lightSens) 
 
 
@@ -21,7 +23,7 @@ function pushMsg(msg, event)
 end
 
 luup.log("mirkLog[i]: AutoMotionLightOnOff") 
-if ((armed == "1") and (skip == "1") and ( 111 > tonumber(lightLevel) )) then
+if ((armed == "1") and ( 10 > tonumber(lightLevel) )) then
 	local lightonA = luup.variable_get (SS_SIA, "Status", roomLight)
 
 	local date = os.date('*t',os.time())
@@ -29,7 +31,8 @@ if ((armed == "1") and (skip == "1") and ( 111 > tonumber(lightLevel) )) then
 
 	if ( (lightonA == "0") and (curTime > 1500) and (curTime <= 2330) ) then
 		luup.log("mirkLog[i]: Auto Motion Light ON ")
-		luup.call_action("urn:upnp-org:serviceId:SwitchPower1", "SetTarget", {newTargetValue = "1"}, roomLight)	
+		luup.call_action(SS_SP, "SetTarget", {newTargetValue = "1"}, roomLight)	
+		luup.call_action(SID_VS, "SetTarget", {newTargetValue = "1"}, 44)	
 		pushMsg("action exectuted", "Auto+MotionLight+On")
 		return true
 	else
