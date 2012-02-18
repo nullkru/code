@@ -1,0 +1,18 @@
+
+public class FormContainer {
+	
+	private List<Form> lstForm;
+	
+	public void add(Form f) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Object gesamtFlaeche() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
+
+

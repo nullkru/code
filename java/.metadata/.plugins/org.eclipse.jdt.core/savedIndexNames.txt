@@ -1,0 +1,13 @@
+INDEX VERSION 1.126+/home/kru/data/project/code/java/.metadata/.plugins/org.eclipse.jdt.core
+460275238.index
+4186241162.index
+2946918410.index
+990687336.index
+3252505014.index
+3535258683.index
+3425764745.index
+1792995720.index
+4091304355.index
+1257828480.index
+1477775360.index
+2859745636.index

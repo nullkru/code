@@ -1,0 +1,20 @@
+import java.util.List;
+
+
+public class FormContainer {
+	
+	private List<Form> lstForm; //Array welches "form"-Objekte beinhaltet
+	
+	public void add(Form f) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Object gesamtFlaeche() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
+
+
