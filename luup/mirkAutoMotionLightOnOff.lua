@@ -1,16 +1,4 @@
-
-local motionSens = 40 -- id  mirkMotionSensor
-local roomLight = 34 -- id  mirkHauptDimmer
-local lightSens = 41 -- id mirkLightSensor
-local vSwitch = 44
-
-local SID_SS = "urn:micasaverde-com:serviceId:SecuritySensor1" -- Security Sensor Service ID
-local SID_SP = "urn:upnp-org:serviceId:SwitchPower1" -- Lamp Sensor Service ID  mirkHauptDimmer
-local SID_VS = "urn:upnp-org:serviceId:VSwitch1" -- Virtual Switch
-local SID_LS = "urn:micasaverde-com:serviceId:LightSensor1"
-
 dID = { motionSens=40, lightSensor=41, autoSceneIndicator=44, mainLight=34, greenLight=37, pultLight=35, bedLight=36 }
-
 sID = { ss="urn:micasaverde-com:serviceId:SecuritySensor1", -- motionsensor
 	sp="urn:upnp-org:serviceId:SwitchPower1",
 	vs="urn:upnp-org:serviceId:VSwitch1",
