@@ -1,33 +1,31 @@
 local period = 5 --minutes period since last sensor trip
-local deviceNo = 87 --deviceid Sensor Device ID
-local deviceNoA = 84 --deviceid Light A
-local deviceNoB = 81 --deviceid Light B
-local deviceNoC = 90 --deviceid Light C
 
-local armed = luup.variable_get (SS_SID, "Armed", deviceNo)
-local skip = luup.variable_get("urn:upnp-org:serviceId:VSwitch1","Status",91)
+dID = { motionSens=40, lightSensor=41, autoSceneIndicator=44, mainLight=34, greenLight=37, pultLight=35, bedLight=36 }
+sID = { ss="urn:micasaverde-com:serviceId:SecuritySensor1", -- motionsensor
+    sp="urn:upnp-org:serviceId:SwitchPower1",
+    vs="urn:upnp-org:serviceId:VSwitch1",
+    ls="urn:micasaverde-com:serviceId:LightSensor1" }
 
- 
-local SS_SID = "urn:micasaverde-com:serviceId:SecuritySensor1" -- Security Sensor Service ID
-local SS_SIA = "urn:upnp-org:serviceId:SwitchPower1" -- Lamp Sensor Service ID Light A
-local SS_SIB = "urn:upnp-org:serviceId:SwitchPower1" -- Lamp Sensor Service ID Light B
-local SS_SIC = "urn:upnp-org:serviceId:SwitchPower1" -- Lamp Sensor Service ID Light C
- 
 
-if ((armed == "1") and (skip == "1")) then
-	local lightonA = luup.variable_get (SS_SIA, "Status", deviceNoA)
-	local lightonB = luup.variable_get (SS_SIB, "Status", deviceNoB)
-	local lightonC = luup.variable_get (SS_SIC, "Status", deviceNoC)
-	if ((lightonA == "1") or (lightonB == "1") or (lightonC == "1")) then
-	   local lastTrip = luup.variable_get (SS_SID, "LastTrip", deviceNo) or os.time()
-	   lastTrip = tonumber (lastTrip)
-       lastCalc = (os.difftime (os.time(), lastTrip) / 60)
-       --luup.log("Value of Variable lastTrip: " .. lastTrip)
-       --luup.log("Value of Variable lastCalc: " .. lastCalc)
-	  	if ((os.difftime (os.time(), lastTrip) / 60) >= period) then
-			return true
-	   	end
+local armed = luup.variable_get (sID['ss'], "Armed", dID['motionSens'])                                                                       
+local autoScnIndicator = luup.variable_get(sID['vs'],"Status", dID['autoSceneIndicator'])
+
+local c=0
+
+if ((armed == "1") and (autoScnIndicator == "1")) then
+
+	local lightID = { 34,35,36,37 }
+	for i,id in pairs(lightID) do
+		if (luup.variable_get(sID['sp'],"Status",id) == "1") then c=c+1 end
 	end
+
+    if ( c > 0 ) then
+       local tripped = luup.variable_get(sID['ss'], "Tripped", dID['motionSens'])
+		if (tripped == "0") then
+			luup.log("mirkLog[i]: mirAutoAllLightOff successfully executed")
+			return true
+		end
+    end
 end
- 
+
 return false
