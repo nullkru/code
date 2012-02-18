@@ -1,6 +1,4 @@
-
-
-local lightID = { 84 }
+local lightID = { 36,37 }
 local SID="urn:upnp-org:serviceId:SwitchPower1" 
 local c=0
 for i,id in pairs(lightID) do
