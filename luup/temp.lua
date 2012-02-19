@@ -11,3 +11,9 @@ if ( c > 0 ) then
     end
     return false
 end  
+
+
+		luup.call_action("urn:upnp-org:serviceId:SwitchPower1", "SetTarget", {newTargetValue = "1"}, 34)	
+		
+		luup.call_action("urn:upnp-org:serviceId:SwitchPower1", "SetTarget", {newTargetValue = "1"}, 44)	
+

@@ -4,28 +4,32 @@ sID = { ss="urn:micasaverde-com:serviceId:SecuritySensor1", -- motionsensor
 	vs="urn:upnp-org:serviceId:VSwitch1",
 	ls="urn:micasaverde-com:serviceId:LightSensor1" }
 
+local times = { startH=16,startM=30,endH=23,endM=55}
+
 local armed = luup.variable_get(sID['ss'], "Armed", dID['motionSens'])
 local autoScnIndicator = luup.variable_get(sID['vs'],"Status", dID['autoScnIndicator'])
 local lightLevel = luup.variable_get(sID['ls'],"CurrentLevel",dID['lightSensor']) 
 
-luup.log("mirkLog[i]: AutoMotionLightOnOff") 
+luup.log("mirkLog[i]: AutoMotionLightOn Triggered") 
 
 if ((armed == "1") and ( 90 > tonumber(lightLevel) )) then
 
 	local lightonA = luup.variable_get (sID['sp'], "Status", dID['mainLight'])
 
-	local date = os.date('*t',os.time())
-	local curTime = tonumber(date['hour']..date['min'])
-  luup.log("mirkLog[i]: AutoMotionLightOnOff: start" .. curTime)
-	if ( (lightonA == "0") and (curTime > 1500) and (curTime <= 2330) ) then
-		luup.log("mirkLog[i]: Auto Motion Light ON ")
-		luup.call_action(sID['sp'], "SetTarget", {newTargetValue = "1"}, dID['mainLight'])	
-		luup.call_action(sID['vs'], "SetTarget", {newTargetValue = "1"}, dID['autoSceneIndicator'])	
-		pushMsg("action exectuted", "Auto+MotionLight+On")
+	curSeconds = os.date('*t',os.time())["hour"] * 3600 + os.date('*t',os.time())["min"] * 60
+	minSeconds =  times['startH'] * 3600 + times['startM'] * 60
+	maxSeconds = times['endH'] * 3600 + times['endM'] * 60
+
+	if ( (lightonA == "0") and (curSeconds > minSeconds) and (curSeconds <= maxSeconds) ) then
+		-- licht an
+		toggleSwitch(dID['mainLight'], 1, nil)
+		-- scenen indikator auf an
+		toggleSwitch(dID['autoSceneIndicator'], 1, "VSwitch1")
+		pushMsg("action+exectuted", "Auto+MotionLight+On", "mirk")
 		return true
 	else
 		luup.log("mirkLog[i]: Not triggered allready on or too late")
-		pushMsg("sorry+too+late", "Auto+Light+On")
+		pushMsg("sorry+too+late", "Auto+Light+On", "mirk")
 		return false
 	end
 end

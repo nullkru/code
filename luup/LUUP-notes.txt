@@ -13,5 +13,30 @@ local SID_SP = "urn:upnp-org:serviceId:SwitchPower1" -- Lamp Sensor Service ID  
 local SID_VS = "urn:upnp-org:serviceId:VSwitch1" -- Virtual Switch
 local SID_LS = "urn:micasaverde-com:serviceId:LightSensor1"   
 
+#dimmer
+
+luup.call_action("urn:upnp-org:serviceId:Dimming1", "SetLoadLevelTarget", {newLoadlevelTarget = "30"}, 6)
 
 zeit stuff:
+
+current_hour = os.date('*t',os.time())["hour"]
+current_min   = os.date('*t',os.time())["min"]
+
+if (current_hour > 15) and ( (current_hour < 21) or ( (current_hour == 21) and (current_min <= 15) ) )
+ then
+ else
+  return false
+end
+
+or:
+
+current_second = os.date('*t',os.time())["hour"] * 3600 + os.date('*t',os.time())["min"] * 60
+
+min_time_in_seconds =  16 * 3600 +   0 * 60
+max_time_in_seconds = 21 * 3600 + 15 * 60
+
+if (current_second > min_time_in_seconds) and (current_second < max_time_in_seconds)
+ then
+ else
+  return false
+end
