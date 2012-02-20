@@ -22,8 +22,8 @@ if ((armed == "1") and (autoScnIndicator == "1")) then
     if ( c > 0 ) then
 		
 		local tripped = luup.variable_get(sID['ss'], "Tripped", dID['motionSens'])
-		if ((tripped == "0" or (os.difftime (os.time(), lastTrip) / 60) >= period)) then
-			toggleSwitch(dID['autoSceneIndicator'], 0)
+		if ((tripped == "0")) then
+			toggleSwitch(dID['autoSceneIndicator'], 0, "VSwitch1")
 			luup.log("mirkLog[i]: mirAutoAllLightOff successfully executed")
 			return true
 		end
