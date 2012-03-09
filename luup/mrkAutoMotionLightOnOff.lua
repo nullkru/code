@@ -23,14 +23,13 @@ if ((armed == "1") and ( 90 > tonumber(lightLevel) )) then
 	if ( (lightonA == "0") and (curSeconds > minSeconds) and (curSeconds <= maxSeconds) ) then
 		-- licht an
 		toggleSwitch(dID['mainLight'], 1, nil)
-		dimmerCtl(dID['pultLight'], 40)
 		-- scenen indikator auf an
 		toggleSwitch(dID['autoSceneIndicator'], 1, "VSwitch1")
-		setVCvar(51,1,"AutoMotionOn")
-		pushMsg("Main+Light+On", "AutoMotionOn", "mirk")
+		pushMsg("action+exectuted", "Auto+MotionLight+On", "mirk")
 		return true
 	else
 		luup.log("mirkLog[i]: Not triggered allready on or too late")
+		pushMsg("sorry+too+late", "Auto+Light+On", "mirk")
 		return false
 	end
 end
