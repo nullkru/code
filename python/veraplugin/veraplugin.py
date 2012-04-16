@@ -38,16 +38,16 @@ class MyPlayer(xbmc.Player) :
 	def onPlayBackResumed(self):
 		if xbmc.Player().isPlayingVideo():
 			os.system('%s %s+"PlayBackResumed"' % (wgetCmd,requestUrl)
+
 player=MyPlayer()
  
 VIDEO = 0
  
 while(1):
-    if xbmc.Player().isPlaying():
-      if xbmc.Player().isPlayingVideo():
-        VIDEO = 1
- 
-      else:
-        VIDEO = 0
- 
-    xbmc.sleep(1000)
+	if xbmc.Player().isPlaying():
+		if xbmc.Player().isPlayingVideo():
+			VIDEO = 1
+	else:
+		VIDEO = 0
+
+	xbmc.sleep(1000)
