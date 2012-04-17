@@ -39,7 +39,7 @@ class MyPlayer(xbmc.Player):
 
 	def onPlayBackResumed(self):
 		if xbmc.Player().isPlayingVideo():
-			os.system('%s \'%s+"Resumed"\'' % (self.wgetCmd,self.requestUrl))
+			os.system('%s \'%sResumed\'' % (self.wgetCmd,self.requestUrl))
 
 
 player=MyPlayer()
