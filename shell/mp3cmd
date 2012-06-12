@@ -24,8 +24,9 @@ fi
 
 
 #Get informations 
-artist=$(id3info *01*mp3 | grep TPE1 | sed  's/=== TPE1 (Lead performer(s)\/Soloist(s)): //g' | \
-	tr [A-Z] [a-z] | sed 's/ /_/g' )
+#artist=$(id3info *01*mp3 | grep TPE1 | sed  's/=== TPE1 (Lead performer(s)\/Soloist(s)): //g' | \
+#	tr [A-Z] [a-z] | sed 's/ /_/g' )
+artist=$(mp3info.py *01*.mp3 | grep TPE1 | sed 's/TPE1:[ \t]*//' | tr [A-Z] [a-z] | sed 's/ /_/g')
 
 if [[ ! -d $MP3DIR/$artist ]]; then
 	info "No artist directory found."
@@ -37,8 +38,9 @@ else
 fi
 
 	
-albumdir=$(id3info *01*mp3 | grep TALB | sed  's/=== TALB (Album\/Movie\/Show title): //g' \
-	   | tr [A-Z] [a-z] | sed 's/ /_/g' )
+#albumdir=$(id3info *01*mp3 | grep TALB | sed  's/=== TALB (Album\/Movie\/Show title): //g' \
+#	   | tr [A-Z] [a-z] | sed 's/ /_/g' )
+albumdir=$(mp3info.py *01*.mp3 | grep TALB | sed 's/TALB:[ \t]*//' | tr [A-Z] [a-z] | sed 's/ /_/g')
 
 if [[ ! -d $MP3DIR/$artist/$albumdir ]]; then
 	info "No album directory found."
