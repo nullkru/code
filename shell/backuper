@@ -2,31 +2,35 @@
 # config syntax
 # backupdir="~/net/p/data/backuper"
 # backthisup="dir1 dir2"
-# exclude=".svn dir3"
+# exclude="dir3 /path/to/dir *.tmp"
 # rsyncopt=" --exclude-from=.excludelist"
 # postcmd="eg: mv  $backupdir blah  "
 
 BACKUPCONF="$HOME/.backthisup.conf"
-date=$(date "+%d-%m-%y_%H:%M:%S")
 
 
 if [[ -e $BACKUPCONF ]]; then
 	source $BACKUPCONF
-	RSYNC_PARAM="-RaP $_excludelst --link-dest=$currentbackup $backthisup $backupdir-${date}"
+	date=$(date "+%d-%m-%y_%H:%M")
 
 	#build exclude list
 	for _exclude in $exclude; do
 		_excludelst="${_excludelst} --exclude $_exclude "
 	done
-	
-	echo "(i) back this up: $backthisup"
-	echo "(i) excluding $exclude"
+
+	backup=${destination}/${HOST}-${date}	
+	RSYNC_PARAM="-RaP $_excludelst --link-dest=$destination/current $source $backup"
+
+	echo "(i) back this up: $source"
+	echo "(i) destination folder: $backup"
+	echo "(i) excluding $_excludelst"
 	sleep 1
 	
 	echo "executing: rsync $rsyncopt $RSYNC_PARAM"
 	rsync $rsyncopt $RSYNC_PARAM
-
-	ln -sf $backupdir-${date} ${currentbackup}
+	
+	echo "linking newest backup with to current symlink"
+	ln -sf $backup $destination/current
 
 	[[ $postcmd ]] && $postcmd && echo "(i) post cmd executed"
 	exit 0
