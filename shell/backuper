@@ -1,12 +1,12 @@
 #!/bin/sh
-# config syntax
-# backupdir="~/net/p/data/backuper"
-# backthisup="dir1 dir2"
-# exclude="dir3 /path/to/dir *.tmp"
-# rsyncopt=" --exclude-from=.excludelist"
+#config syntax:
+# source="/boot /etc /home/kru"
+# destination="/media/datasd/data/backups/"
+# exclude=""
+# rsyncopt=" --exclude-from=/home/kru/.kbackupexclude"
 # postcmd="eg: mv  $backupdir blah  "
 
-BACKUPCONF="$HOME/.backthisup.conf"
+BACKUPCONF="/home/kru/.backthisup.conf"
 
 
 if [[ -e $BACKUPCONF ]]; then
