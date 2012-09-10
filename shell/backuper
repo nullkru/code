@@ -7,9 +7,12 @@
 # postcmd="eg: mv  $backupdir blah  "
 
 BACKUPCONF="$HOME/.backthisup.conf"
+date=$(date "+%d-%m-%y_%H:%M:%S")
+
 
 if [[ -e $BACKUPCONF ]]; then
 	source $BACKUPCONF
+	RSYNC_PARAM="-RaP $_excludelst --link-dest=$currentbackup $backthisup $backupdir-${date}"
 
 	#build exclude list
 	for _exclude in $exclude; do
@@ -20,7 +23,13 @@ if [[ -e $BACKUPCONF ]]; then
 	echo "(i) excluding $exclude"
 	sleep 1
 	
-	rsync $rsyncopt -Rrvlt $_excludelst  $backthisup $backupdir
+	echo "executing: rsync $rsyncopt $RSYNC_PARAM"
+	rsync $rsyncopt $RSYNC_PARAM
+
+	
+	rm -rf $currentbackup
+	ln -s $backupdir-${date} $currentbackup
+
 	[[ $postcmd ]] && $postcmd && echo "(i) post cmd executed"
 	exit 0
 else
