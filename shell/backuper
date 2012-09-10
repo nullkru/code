@@ -29,8 +29,9 @@ if [[ -e $BACKUPCONF ]]; then
 	echo "executing: rsync $rsyncopt $RSYNC_PARAM"
 	rsync $rsyncopt $RSYNC_PARAM
 	
+	rm -f $destination/current
 	echo "linking newest backup with to current symlink"
-	ln -sf $backup $destination/current
+	ln -s $backup $destination/current
 
 	[[ $postcmd ]] && $postcmd && echo "(i) post cmd executed"
 	exit 0
