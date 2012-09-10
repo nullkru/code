@@ -26,7 +26,7 @@ if [[ -e $BACKUPCONF ]]; then
 	echo "executing: rsync $rsyncopt $RSYNC_PARAM"
 	rsync $rsyncopt $RSYNC_PARAM
 
-	ln -sf $backupdir-${date} ${currentbackup}/
+	ln -sf $backupdir-${date} ${currentbackup}
 
 	[[ $postcmd ]] && $postcmd && echo "(i) post cmd executed"
 	exit 0
