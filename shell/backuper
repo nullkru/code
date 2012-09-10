@@ -18,7 +18,7 @@ if [[ -e $BACKUPCONF ]]; then
 		_excludelst="${_excludelst} --exclude $_exclude "
 	done
 
-	backup=${destination}/${HOST}-${date}	
+	backup=${destination}/$(hostname)-${date}	
 	RSYNC_PARAM="-RaP $_excludelst --link-dest=$destination/current $source $backup"
 
 	echo "(i) back this up: $source"
