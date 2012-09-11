@@ -26,14 +26,18 @@ if [[ -e $BACKUPCONF ]]; then
 	echo "(i) excluding $_excludelst"
 	sleep 1
 	
-	echo "executing: rsync $rsyncopt $RSYNC_PARAM"
-	rsync $rsyncopt $RSYNC_PARAM
-	
-	rm -f $destination/current
-	echo "linking newest backup with to current symlink"
-	ln -s $backup $destination/current
+	echo "executing: sudo rsync $rsyncopt $RSYNC_PARAM"
+	sudo rsync $rsyncopt $RSYNC_PARAM
+	exitcode=$?
 
-	[[ $postcmd ]] && $postcmd && echo "(i) post cmd executed"
+	echo "(i) RSYNC Exit Status: $exitcode" 
+	if [[ $exitcode == 0 ]]; then
+		rm -f $destination/current
+		echo "linking newest backup with to current symlink"
+		ln -s $backup $destination/current
+		[[ $postcmd ]] && $postcmd && echo "(i) post cmd executed"
+	fi
+
 	exit 0
 else
 	echo "(!) sorry no config found. view script source for more informations"
