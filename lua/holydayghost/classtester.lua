@@ -11,7 +11,7 @@ end
 
 -- create new object
 
-g = Ghost.new("HippiGspaengst", 5)
+g = Ghost.new("HippiGspaengst",1351418657,1351425882 )
 g:info()
 g:resume()
 g:info()
