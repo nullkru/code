@@ -34,7 +34,7 @@ function Ghost.spook(name, startTs, endTs)
     print("--->" .. name .. ": appeared (e.g: light on)")
     while startTs < os.time() and endTs > os.time()  do  
         print("--->" .. name .. ": Boo! ")
-        coroutine.yield()
+        coroutine.yield(name)
     end 
     print("--->".. name .. ": is eliminated! (e.g: light off) ")
 end
