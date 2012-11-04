@@ -10,7 +10,7 @@ timeTable = tcO:getTimes()
 
 g = {}
 for i,v in ipairs(timeTable) do
-	g[i] = Ghost.new("HippieGspaengst"..i, v[1], v[2])
+	g[i] = Ghost.new("HippieGspaengst"..i, v[1], v[2],80)
 	g[i]:info()
 end
 

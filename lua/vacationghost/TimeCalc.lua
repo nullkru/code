@@ -1,5 +1,5 @@
 --
--- TimeCalc
+-- TimeCalc Class
 --
 require('Utils')
 math.randomseed(os.time())	
@@ -44,11 +44,11 @@ function TimeCalc:getTimes()
 	breakCycles = {}
 	gPhases = {}
 
-	print("oncyc: " .. self.onCycles)
+	--print("oncyc: " .. self.onCycles)
 	while (self.onPhase - (self.onCycles * (self.onTime + 300 + self.onTimeVariation))) < 1 do
 		self.onCycles=self.onCycles - 1
 	end
-	print("oncyc after: " .. self.onCycles)
+	--print("oncyc after: " .. self.onCycles)
 
 	-- phasen berechnen wie lange licht brennt
 	for i=0,self.onCycles do
