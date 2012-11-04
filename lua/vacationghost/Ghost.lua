@@ -9,10 +9,11 @@ Ghost.__index = Ghost
 	Constructor  
 	creates a new Ghost object
 ]]
-function Ghost.new(name, startTs, endTs, dimLevel)
+function Ghost.new(name,lightId, startTs, endTs, dimLevel)
 	local attr = {}
 
 	attr.name = name
+	attr.lightId = lightId
 	attr.startTs = startTs
 	attr.endTs = endTs
 	attr.dimLevel = dimLevel
@@ -24,7 +25,7 @@ function Ghost.new(name, startTs, endTs, dimLevel)
 end
 
 function Ghost:info()
-	return "coroutine:".. coroutine.status(self.cor)..", name="..self.name..", start="..os.date('%c',self.startTs)..", stop="..os.date('%c',self.endTs)..", dimLevel="..self.dimLevel
+	return "status="..coroutine.status(self.cor)..", name="..self.name..", lightId="..self.lightId..", start="..os.date('%X %x',self.startTs)..", stop="..os.date('%X %x',self.endTs)..", dimLevel="..self.dimLevel
 end
 
 -- the spook function 

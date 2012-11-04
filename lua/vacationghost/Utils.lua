@@ -48,10 +48,10 @@ function Utils.existsInTbl(table, str)
 end
 
 
-function Utils.tblRemove(table, str)
-	for i, name in ipair(table) do
+function Utils.tblRemove(tbl, str)
+	for i,name in ipairs(tbl) do
 		if name == str then
-			table.remove(table, i)
+			table.remove(tbl, i)
 			break
 		end
 	end
