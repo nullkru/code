@@ -1,7 +1,10 @@
 -- testing the class
 
-require 'Ghost'
-require 'TimeCalc'
+require("VGhostGhost")
+require("VGhostTimeCalc")
+--TimeCalc = VGhostTimeCalc
+
+
 -- calc times
 
 tcO = TimeCalc.new("07:00", "23:00", 60, 10, 6)
@@ -27,7 +30,7 @@ gs:resume()
 --
 --
 print("Utils tests:\n\n\n")
-require('Utils')
+require("VGhostUtils")
 
 tbl = {'ghost', 2, 3}
 print(tbl[1], tbl[2],tbl[3])
