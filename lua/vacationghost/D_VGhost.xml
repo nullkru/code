@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <device>
+    <deviceType>urn:schemas-upnp-org:device:VGhost:1</deviceType>
+    <staticJson>D_VGhost.json</staticJson> 
+    <friendlyName>VacationGhost</friendlyName>
+    <manufacturer>chixxi</manufacturer>
+    <manufacturerURL></manufacturerURL>
+    <modelDescription>VacationGhost</modelDescription>
+    <modelName>VacationGhost</modelName>
+    <modelNumber>1.0</modelNumber>
+    <protocol>cr</protocol>
+    <handleChildren>0</handleChildren>
+    <serviceList>
+      <service>
+        <serviceType>urn:schemas-upnp-org:service:VGhost:1</serviceType>
+        <serviceId>urn:upnp-org:serviceId:VGhost1</serviceId>
+        <controlURL>/upnp/control/VGhost1</controlURL>
+        <eventSubURL>/upnp/event/VGhost1</eventSubURL>
+        <SCPDURL>S_VGhost.xml</SCPDURL>
+      </service>
+    </serviceList>
+    <implementationList>
+      <implementationFile>I_VGhost.xml</implementationFile>
+    </implementationList>
+  </device>
+</root>
+ 

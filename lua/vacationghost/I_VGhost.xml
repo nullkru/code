@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<implementation>
+ 
+  <files>VacationGhost.lua</files>
+  <files>VGhostGhost.lua</files>
+  <files>VGhostUtils.lua</files>
+  <files>VGhostTimeCalc.lua</files>
+  <functions>
+	function boot(lul_device)
+	
+	   sid = "urn:upnp-org:serviceId:VGhost1"
+
+	   local oo = luup.variable_get(sid,"OnOff", lul_device)
+	   if oo == nil then
+		luup.variable_set(sid,"OnOff","0",lul_device)
+	   end
+	   
+	   local st = luup.variable_get(sid,"State", lul_device)
+	   if st == nil then
+		luup.variable_set(sid,"State","0",lul_device)
+	   end
+
+		for i=1,8 do
+			lid = luup.variable_get(sid,"LightID" ..i, lul_device)
+			if lid == nil then
+				luup.variable_set(sid,"LightID" ..i,"--",lul_device)
+			end
+			local ts = luup.variable_get(sid,"TimeStart" ..i, lul_device)
+			if ts == nil then
+				luup.variable_set(sid,"TimeStart" ..i,"--",lul_device)
+			end
+			local tst = luup.variable_get(sid,"TimeStop" ..i, lul_device)
+			if tst == nil then
+				luup.variable_set(sid,"TimeStop" ..i,"--",lul_device)
+			end
+			local ot = luup.variable_get(sid,"OnTime" ..i, lul_device)
+			if ot == nil then
+				luup.variable_set(sid,"OnTime" ..i,"--",lul_device)
+			end
+			local ov = luup.variable_get(sid,"OnVariation" ..i, lul_device)
+			if ov == nil then
+				luup.variable_set(sid,"OnVariation" ..i,"--",lul_device)
+			end
+			local op = luup.variable_get(sid,"OnPropability" ..i, lul_device)
+			if op == nil then
+				luup.variable_set(sid,"OnPropability" ..i,"--",lul_device)
+			end
+			local dl = luup.variable_get(sid,"DimLevel" ..i, lul_device)
+			if dl == nil then
+				luup.variable_set(sid,"DimLevel" ..i,"--",lul_device)
+			end
+			local oc = luup.variable_get(sid,"OnCycle" ..i, lul_device)
+			if oc == nil then
+				luup.variable_set(sid,"OnCycle" ..i,"--",lul_device)
+			end
+		end
+		
+	    luup.log("VGinfo: Starting VacationGhost")
+	    luup.call_delay('main',1,tonumber(lul_device),1)
+		luup.log("VGinfo: Startup of VacationGhost Plugin ended")
+	
+	end
+  </functions>
+  <startup>boot</startup>
+  <actionList>
+   <action>
+     <serviceId>urn:upnp-org:serviceId:VGhost1</serviceId>
+     <name>Set</name>
+     <run>
+	   	if (lul_settings.newTargetValue == "1") then
+			luup.variable_set("urn:upnp-org:serviceId:VGhost1","OnOff",1,lul_device)
+		else
+			luup.variable_set("urn:upnp-org:serviceId:VGhost1","OnOff",0,lul_device)
+		end
+     </run>
+   </action>	
+  </actionList>
+</implementation>
