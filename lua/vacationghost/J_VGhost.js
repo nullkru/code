@@ -424,7 +424,25 @@ function saveall (luupcode,device)
 	xmlHttp.open( "GET", ''+ ipaddress +'id=lu_action&serviceId=urn:micasaverde-com:serviceId:HomeAutomationGateway1&action=RunLua&Code=luup.variable_set("'+ HC_SID +'","'+dimlevelss[i]+'","'+dimlevelsss[i]+'",'+ device +')', false );
 	xmlHttp.send( null );
 	}
-	
+	// Update Changes variable 	
+	var xmlHttp = null;
+	xmlHttp = new XMLHttpRequest();
+	xmlHttp.open( "GET", ''+ ipaddress +'id=lu_action&serviceId=urn:micasaverde-com:serviceId:HomeAutomationGateway1&action=RunLua&Code=luup.variable_set("'+ HC_SID +'","Changes",1,'+ device +')', false );
+	xmlHttp.send( null );
+
 	function finished () {showStatus ("ALL CHANGES SAVED!", false);}
 	window.setTimeout(finished, 1000);
+}
+
+/*
+ * Show gost informations
+ */
+
+
+function vghostInfo(device) {
+
+	var html = 'info info info';
+		
+	set_panel_html (html);
+	showStatus ("Next Ghost times", false);
 }

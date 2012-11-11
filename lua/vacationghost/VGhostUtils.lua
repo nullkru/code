@@ -57,4 +57,30 @@ function Utils.tblRemove(tbl, str)
 	end
 end
 
+function Utils.log(msg)
+	local file = io.open("/tmp/log/cmh/VacationGhost.log", "a")
+	ts = os.date('%c',os.time())
+	file:write(ts..": "..msg.."\n")
+	file:close()
+	luup.log(msg)
+end
+
+function Utils.writeInfo(ghost)
+	local file = io.open("/tmp/vg.info","w")
+	local fileraw = io.open("/tmp/vgraw.info","w")
+	local jsArr = '['
+	local raw = ''
+	for i=1,#ghost do
+		jsArr = jsArr..'{"name":"'..ghost[i].name..'"},'..
+			'{"start":"'..os.date('%X %x',ghost[i].startTs)..'"},'..
+			'{"end":"'..os.date('%X %x',ghost[i].endTs)..'"}'
+		raw = raw .. ghost[i]:info() .."\n"
+	end
+	jsArr = jsArr..']'
+	file:write(jsArr)
+	fileraw:write(raw)
+	file:close()
+	fileraw:close()
+end
+
 -- END Utils Class

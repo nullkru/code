@@ -20,6 +20,11 @@
 		luup.variable_set(sid,"State","0",lul_device)
 	   end
 
+	   local changes = luup.variable_get(sid,"Changes", lul_device)
+	   if changes == nil then
+		luup.variable_set(sid,"Changes",0,lul_device)
+	   end
+
 		for i=1,8 do
 			lid = luup.variable_get(sid,"LightID" ..i, lul_device)
 			if lid == nil then

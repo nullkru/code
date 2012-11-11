@@ -17,6 +17,12 @@
       <defaultValue>0</defaultValue>
       <shortCode>state</shortCode>
     </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>Changes</name>
+      <dataType>boolean</dataType>
+      <defaultValue>0</defaultValue>
+      <shortCode>changes</shortCode>
+    </stateVariable>
     <stateVariable sendEvents="no">
       <name>Target</name>
       <sendEventsAttribute>no</sendEventsAttribute> 

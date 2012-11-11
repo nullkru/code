@@ -7,7 +7,8 @@ require("VGhostTimeCalc")
 
 -- calc times
 
-tcO = TimeCalc.new("07:00", "23:00", 60, 10, 6)
+--tcO = TimeCalc.new("07:00", "23:00", 60, 10, 6)
+tcO = TimeCalc.new("22:00", "02:00", 30, 10, 6,100)
 timeTable = tcO:getTimes()
 
 g = {}
@@ -18,7 +19,7 @@ end
 
 -- create new object
 print("\n------>Static ghost")
-gs = Ghost.new("HippiGspaengst",42,1351418657,1351425882,100 )
+gs = Ghost.new("StaticGspaengst",42,1351418657,1351425882,100 )
 print(gs:info())
 gs:resume()
 print(gs:info())
@@ -49,3 +50,5 @@ Utils.tblRemove(tbl,3)
 
 print("after remove")
 for k,v in ipairs(tbl) do print(k,v) end
+
+Utils.writeInfo(tblN)

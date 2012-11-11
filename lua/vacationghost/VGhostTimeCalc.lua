@@ -31,10 +31,13 @@ function TimeCalc.new(startTime, endTime, onTime, onTimeVariation, onCycles, onP
 	startTs = os.time({year=os.date('%Y',ts), month=os.date('%m',ts), day=os.date('%d',ts), hour=startt[1], min=startt[2] })
 	endt = Utils.split(endTime, ":")
 	endTs = os.time({year=os.date('%Y',ts), month=os.date('%m',ts), day=os.date('%d',ts), hour=endt[1], min=endt[2] })
-
-	attr.onPhase = endTs - startTs
-
 	
+	if(endTs > startTs) then
+		attr.onPhase = endTs - startTs
+	else
+		attr.onPhase = (endTs + 86400) - startTs
+	end
+
 	setmetatable(attr,TimeCalc)
 	return attr
 end

@@ -1,7 +1,7 @@
 --
 -- Ghost Class
 -- import require('Ghost')
-
+math.randomseed(os.time())
 Ghost = {}
 Ghost.__index = Ghost
 
@@ -17,6 +17,9 @@ function Ghost.new(name,lightId, startTs, endTs, dimLevel)
 	attr.startTs = startTs
 	attr.endTs = endTs
 	attr.dimLevel = dimLevel
+	if dimLevel == 0 then
+		attr.dimLevel = math.random(0,100)
+	end
 
 	attr.cor = coroutine.create(Ghost.spook)
 

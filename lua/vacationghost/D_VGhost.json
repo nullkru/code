@@ -113,12 +113,22 @@
 	 "ScriptName": "J_VGhost.js",
 	 "Function": "vghostsettings"
     },
+	{
+    "Label": {
+      "lang_tag": "info",
+      "text": "Informations"
+             },
+     "Position": "2",
+	 "TabType": "javascript",
+	 "ScriptName": "J_VGhost.js",
+	 "Function": "vghostInfo"
+    },
     {
     "Label": {
        "lang_tag": "advanced",
        "text": "Advanced"
              },
-      "Position": "2",
+      "Position": "3",
       "TabType": "javascript",
       "ScriptName": "shared.js",
       "Function": "advanced_device"
