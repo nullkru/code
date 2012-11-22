@@ -57,30 +57,53 @@ function Utils.tblRemove(tbl, str)
 	end
 end
 
+function Utils.genUIinfos(ghost) 
+	local file = io.open("/www/cmh/VacationGhost.info.txt", "w")
+	local str = ''
+	for i=1,#ghost do
+		str = str .. ghost[i]:info()	
+		file:write(ghost[i]:info())
+	end
+	file:close()
+	return str
+end	
+
 function Utils.log(msg)
-	local file = io.open("/tmp/log/cmh/VacationGhost.log", "a")
+	local file = io.open("/www/cmh/VacationGhost.log", "a")
 	ts = os.date('%c',os.time())
 	file:write(ts..": "..msg.."\n")
 	file:close()
 	luup.log(msg)
 end
 
-function Utils.writeInfo(ghost)
-	local file = io.open("/tmp/vg.info","w")
-	local fileraw = io.open("/tmp/vgraw.info","w")
+function Utils.clearLog()
+	local file = io.open("/www/cmh/VacationGhost.log", "w")
+	ts = os.date('%X %x',os.time())
+	file:write(ts.." New Phase \n")
+	file:close()
+end
+
+
+function Utils.writeJson(ghost)
+	--local file = io.open("/tmp/VGhostInfo.json","w")
+	local file = io.open("/www/cmh/VGhostInfo.json","w")
 	local jsArr = '['
-	local raw = ''
 	for i=1,#ghost do
-		jsArr = jsArr..'{"name":"'..ghost[i].name..'"},'..
-			'{"start":"'..os.date('%X %x',ghost[i].startTs)..'"},'..
-			'{"end":"'..os.date('%X %x',ghost[i].endTs)..'"}'
-		raw = raw .. ghost[i]:info() .."\n"
+		endchar = "},"
+		if i == #ghost then
+			endchar	= "}"
+		end
+		jsArr = jsArr..'{"name":"'..ghost[i].name..'",'..
+			'"lightId":"'..ghost[i].lightId..'",'..
+			'"dimLevel":"'..ghost[i].dimLevel..'",'..
+			'"start":"'..os.date('%X',ghost[i].startTs)..'",'..
+			'"end":"'..os.date('%X',ghost[i].endTs)..'",'..
+			'"date":"'..os.date('%x',ghost[i].endTs)..'"'.. endchar
+
 	end
 	jsArr = jsArr..']'
 	file:write(jsArr)
-	fileraw:write(raw)
 	file:close()
-	fileraw:close()
 end
 
 -- END Utils Class

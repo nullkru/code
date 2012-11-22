@@ -25,6 +25,7 @@ gs:resume()
 print(gs:info())
 gs:resume()
 
+Utils.writeJson(g)
 
 
 -- Utils
@@ -51,4 +52,3 @@ Utils.tblRemove(tbl,3)
 print("after remove")
 for k,v in ipairs(tbl) do print(k,v) end
 
-Utils.writeInfo(tblN)

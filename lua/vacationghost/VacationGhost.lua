@@ -14,9 +14,10 @@ cemetery = {} -- dead ghosts
 
 -- main function
 function main(lul_device)
-
+	
 	vgPluginId = tonumber(lul_device)
-	luup.log("VGinfo: Calling main loop with lul_device: " .. vgPluginId)
+	Utils.clearLog()
+	Utils.log("VGinfo: Calling main loop with lul_device: " .. vgPluginId)
 
 	-- start der phase: auslesen der vars
 	onOff = luup.variable_get(sid,"OnOff", vgPluginId)
@@ -52,7 +53,8 @@ function main(lul_device)
 				--luup.log("VGinitPhase: "..ghost[n]:info())
 				Utils.log("VGinitPhase: "..ghost[n]:info())
 			end
-			Utils.writeInfo(ghost)
+			Utils.writeJson(ghost)
+			Utils.genUIinfos(ghost)
 			-- phase aufrufen
 			phase(lul_device)
 		else
