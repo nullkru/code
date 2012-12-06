@@ -15,48 +15,48 @@
 		luup.variable_set(sid,"OnOff","0",lul_device)
 	   end
 	   
-	   local st = luup.variable_get(sid,"State", lul_device)
+	   local st = luup.variable_get(sid,"Night", lul_device)
 	   if st == nil then
-		luup.variable_set(sid,"State","0",lul_device)
+		luup.variable_set(sid,"Night","0",lul_device)
 	   end
 
 	   local changes = luup.variable_get(sid,"Changes", lul_device)
 	   if changes == nil then
-		luup.variable_set(sid,"Changes",0,lul_device)
+		luup.variable_set(sid,"Changes","0",lul_device)
 	   end
 
 		for i=1,8 do
 			lid = luup.variable_get(sid,"LightID" ..i, lul_device)
 			if lid == nil then
-				luup.variable_set(sid,"LightID" ..i,"--",lul_device)
+				luup.variable_set(sid,"LightID" ..i,"0",lul_device)
 			end
 			local ts = luup.variable_get(sid,"TimeStart" ..i, lul_device)
 			if ts == nil then
-				luup.variable_set(sid,"TimeStart" ..i,"--",lul_device)
+				luup.variable_set(sid,"TimeStart" ..i,"0",lul_device)
 			end
 			local tst = luup.variable_get(sid,"TimeStop" ..i, lul_device)
 			if tst == nil then
-				luup.variable_set(sid,"TimeStop" ..i,"--",lul_device)
+				luup.variable_set(sid,"TimeStop" ..i,"0",lul_device)
 			end
 			local ot = luup.variable_get(sid,"OnTime" ..i, lul_device)
 			if ot == nil then
-				luup.variable_set(sid,"OnTime" ..i,"--",lul_device)
+				luup.variable_set(sid,"OnTime" ..i,"0",lul_device)
 			end
 			local ov = luup.variable_get(sid,"OnVariation" ..i, lul_device)
 			if ov == nil then
-				luup.variable_set(sid,"OnVariation" ..i,"--",lul_device)
+				luup.variable_set(sid,"OnVariation" ..i,"0",lul_device)
 			end
 			local op = luup.variable_get(sid,"OnPropability" ..i, lul_device)
 			if op == nil then
-				luup.variable_set(sid,"OnPropability" ..i,"--",lul_device)
+				luup.variable_set(sid,"OnPropability" ..i,"0",lul_device)
 			end
 			local dl = luup.variable_get(sid,"DimLevel" ..i, lul_device)
 			if dl == nil then
-				luup.variable_set(sid,"DimLevel" ..i,"--",lul_device)
+				luup.variable_set(sid,"DimLevel" ..i,"0",lul_device)
 			end
 			local oc = luup.variable_get(sid,"OnCycle" ..i, lul_device)
 			if oc == nil then
-				luup.variable_set(sid,"OnCycle" ..i,"--",lul_device)
+				luup.variable_set(sid,"OnCycle" ..i,"0",lul_device)
 			end
 		end
 		
