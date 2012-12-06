@@ -172,6 +172,7 @@ function saveall (luupcode,device)
 function getDevicesPOC() {
 
 	var testSel = 34;
+
 	new Ajax.Request("/port_3480/data_request", {
 		method: "get",
 		parameters: {
@@ -183,11 +184,26 @@ function getDevicesPOC() {
 			//alert(res['devices'][1]['category']);
 			var selBox = document.getElementById("VGdevices");
 			selBox.options[0]=new Option("select dev");
-			
+
+			var rooms = res['rooms'];
+			var curRoomId = 0; 
 			var n = 1;
+
 			for(var i=0; i<res['devices'].length; i++){
 				var dev = res['devices'][i];
+
 				if (dev['category'] == 2 || dev['category'] == 3){
+			
+					if( curRoomId != dev['room']){
+						for(var r=0; r<rooms.length ; r++){
+							if(rooms[r]['id'] == dev['room']){
+								curRoomId = r;
+							}
+						}
+						selBox.options[n++] = new Option("-- "+rooms[curRoomId]['name'],"");
+						curRoomId = dev['room'];
+					}
+
 					if(dev['id'] == testSel){
 						selBox.options[n++] = new Option(dev['id']+" "+dev['name'],dev['id'],true);
 						selBox.options[0] = new Option(dev['id'],dev['id']);
