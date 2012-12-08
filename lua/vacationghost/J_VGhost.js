@@ -290,16 +290,22 @@ function startUpdater() {
 	elem.innerHTML = elem.innerHTML + '<br />Total Ghosts: '+ghosts.length;
 	var iHsize = elem.innerHTML.length;
 
+	ghosts.sort(function(a,b){return a['start']-b['start']});	
+	var last = 0;
 	for (var i=0; i<ghosts.length; i++) {
 		if( (ghosts[i]['start'] * 1000) < now.getTime() && (ghosts[i]['end'] * 1000) > now.getTime() ){
 			elem.innerHTML = elem.innerHTML + '<br />currently spooking: light ID:'+ghosts[i]['lightId']+' dies:'+getLTime(ghosts[i]['end']);
+			last = i;
 		}
 	}
-
 	if(iHsize == elem.innerHTML.length){ 
 		elem.innerHTML = elem.innerHTML + '<br />No ghosts around';
    	}
-
+	elem.innerHTML = elem.innerHTML + '<br /><br /><b>up next:</b><br />';
+	for(var i = 0; i<4; i++){
+			elem.innerHTML = elem.innerHTML + '<br />light ID:'+ghosts[last]['lightId']+' starts:'+getLTime(ghosts[last]['start']);
+			last++;
+	}
 }
 
 function getLDate(ts) {
