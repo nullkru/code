@@ -186,7 +186,7 @@ function getOptionDevices(select,curN) {
 			var res = transport.responseText.evalJSON();
 
 			var selBox = document.getElementById("selLight"+curN);
-			selBox.options[0]=new Option("Select device:",0);
+			selBox.options[0]=new Option("Select device:");
 
 			var rooms = res['rooms'];
 			var curRoomId = 0; 
@@ -218,7 +218,7 @@ function getOptionDevices(select,curN) {
 					}
 				}
 			}
-			selBox.options[n++] = new Option("None",0);
+			selBox.options[n++] = new Option("None");
 		},
 		onFailure: function() {
 			alert("fuck");
@@ -227,17 +227,21 @@ function getOptionDevices(select,curN) {
 	return true;	
 }
 
+//global ghost array
+var ghosts = new Array();
+
 function vghostInfo(device) {
 
 	var html = [
 		'<div id="info">',
 			//'<textarea id="VGinfo" style="width:100%; height:100px;"></textarea>',
+			'<div id="currentRunning" style="margin-bottom:10px; padding:5px;"></div>',
 			'<table id="VGtblInfo" style="width:100%; border:1px solid #000;">',
 				'<tr><th>Name</th><th>ID</th><th>From</th><th>To</th><th>On</th></tr></table>',
 		'</div>'
 	].join("\n");
 
-	
+
 	new Ajax.Request("/cmh/VGhostInfo.json", {
 		method: "get",
 		onSuccess: function(transport) {
@@ -248,16 +252,18 @@ function vghostInfo(device) {
 			var ghostInfo = "";
 			for(var i=0; i<res.length; i++){
 				var g = res[i];
-				ghostInfo += g['name'] + " light ID: "+ g['lightId'] +" from: "+ g['start'] +" till: "+ g['end'] +" on: "+ g['date'] +"\n";
-				
+				//ghostInfo += g['name'] + " light ID: "+ g['lightId'] +" from: "+ g['start'] +" till: "+ g['end'] +" on: "+ g['date'] +"\n";
+				if(ghosts.length <= res.length) {
+					ghosts.push(g);
+				}
 				var tblRowCount = tbl.rows.length;
 				var row = tbl.insertRow(tblRowCount);
 				
 				row.insertCell(0).innerHTML = g['name'];
 				row.insertCell(1).innerHTML = g['lightId'];
-				row.insertCell(2).innerHTML = g['start'];
-				row.insertCell(3).innerHTML = g['end'];
-				row.insertCell(4).innerHTML = g['date'];
+				row.insertCell(2).innerHTML = getLTime(g['start']);
+				row.insertCell(3).innerHTML = getLTime(g['end']);
+				row.insertCell(4).innerHTML = getLDate(g['end']);
 
 			}
 			//document.getElementById("VGinfo").innerHTML = ghostInfo;
@@ -266,8 +272,46 @@ function vghostInfo(device) {
 			document.getElementById("VGinfo").innerHTML = "No more ghosts or disabled?";
 		}
 	});
+	startRefresher();
 	set_panel_html(html);
 	showStatus ("Next Ghost times", false);
 	return true;
 }
 
+function startRefresher() {
+	setInterval("startUpdater();",1000);
+}
+
+function startUpdater() {
+	var now = new Date();
+	var elem = document.getElementById('currentRunning');
+	elem.innerHTML = null;
+	elem.innerHTML = now.getHours()+":"+now.getMinutes()+":"+now.getSeconds();
+	elem.innerHTML = elem.innerHTML + '<br />Total Ghosts: '+ghosts.length;
+	var iHsize = elem.innerHTML.length;
+
+	for (var i=0; i<ghosts.length; i++) {
+		if( (ghosts[i]['start'] * 1000) < now.getTime() && (ghosts[i]['end'] * 1000) > now.getTime() ){
+			elem.innerHTML = elem.innerHTML + '<br />currently spooking: light ID:'+ghosts[i]['lightId']+' dies:'+getLTime(ghosts[i]['end']);
+		}
+	}
+
+	if(iHsize == elem.innerHTML.length){ 
+		elem.innerHTML = elem.innerHTML + '<br />No ghosts around';
+   	}
+
+}
+
+function getLDate(ts) {
+	var ts = new Date(ts * 1000);
+	return ts.getDate()+"."+(ts.getMonth()+1)+"."+ts.getFullYear();	
+}
+
+function getLTime(ts) {
+	var ts = new Date(ts * 1000);
+	var min = ts.getMinutes();
+	var hour = ts.getHours();
+	if ( min < 10 ) { min = '0'+min.toString(); }
+	if ( hour < 1 ) { hour = '0'+hour.toString(); }
+	return hour+":"+min;	
+}

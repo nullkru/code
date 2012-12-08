@@ -96,9 +96,9 @@ function Utils.writeJson(ghost)
 		jsArr = jsArr..'{"name":"'..ghost[i].name..'",'..
 			'"lightId":"'..ghost[i].lightId..'",'..
 			'"dimLevel":"'..ghost[i].dimLevel..'",'..
-			'"start":"'..os.date('%X',ghost[i].startTs)..'",'..
-			'"end":"'..os.date('%X',ghost[i].endTs)..'",'..
-			'"date":"'..os.date('%x',ghost[i].endTs)..'"'.. endchar
+			'"start":"'..ghost[i].startTs..'",'..
+			'"end":"'..ghost[i].endTs..'",'..
+			'"date":"'..ghost[i].endTs..'"'.. endchar
 
 	end
 	jsArr = jsArr..']'
