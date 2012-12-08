@@ -2,11 +2,17 @@
   "flashicon": "icons\/vghosticon.png",
   "halloIconsDir": "pics\/hallo",
   "state_icons": [
-        "vghosticon.png",
+        "vghosticon_0.png",
+        "vghosticon_50.png",
+        "vghosticon_100.png"
     ],
   "x":"2",
   "y":"4",
   "DisplayStatus": {
+    "Service": "urn:upnp-org:serviceId:VGhost1",
+    "Variable": "State",
+    "MinValue": "0",
+    "MaxValue": "100"
   },
   "doc_url": {
 	"doc_forced_url": {
@@ -115,8 +121,8 @@
     },
 	{
     "Label": {
-      "lang_tag": "info",
-      "text": "Informations"
+      "lang_tag": "ghosts",
+      "text": "Ghosts"
              },
      "Position": "2",
 	 "TabType": "javascript",
