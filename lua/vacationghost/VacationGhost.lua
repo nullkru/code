@@ -47,23 +47,29 @@ function main(lul_device)
 			end
 		end
 
+
+		-- abfragen der isNight() variable
+		isNight = luup.variable_get(sid,"Night",vgPluginId)
+		if luup.is_night() and tonumber(isNight) > 0 then isNight = true end 
+
 		-- informationen der Geister anzeigen
-		if #ghost > 0 then
+		if #ghost > 0 and isNight then
 			for n=1,#ghost do
 				--luup.log("VGinitPhase: "..ghost[n]:info())
 				Utils.log("VGinitPhase: "..ghost[n]:info())
 			end
 			Utils.writeJson(ghost)
 			Utils.genUIinfos(ghost)
+			luup.variable_set(sid,"State",50,tonumber(lul_device))
 			-- phase aufrufen
 			phase(lul_device)
 		else
-			luup.log("VGinitPhase: no more Ghosts for today")
+			Utils.log("VGinitPhase: no more Ghosts for today")
 			luup.call_timer("main", 1, 10, "", lul_device)
 		end
 
 	else
-		luup.log("VGinitPhase: VacationGhost is disabled, sleep and start over")
+		Utils.log("VGinitPhase: VacationGhost is disabled, sleep and start over")
 		luup.call_timer("main", 1, 10, "", lul_device)
 	end
 end
@@ -73,9 +79,9 @@ function phase(lul_device)
 	
 	curTs = os.time()
 
-	luup.log("VGdebug: total ghosts: "..#ghost)
-	luup.log("VGdebug: running ghosts: "..#status)
-	luup.log("VGdebug: ghosts in cemetery: "..#cemetery)
+	Utils.log("VGdebug: total ghosts: "..#ghost)
+	Utils.log("VGdebug: running ghosts: "..#status)
+	Utils.log("VGdebug: ghosts in cemetery: "..#cemetery)
 
 	for i=1,#ghost do
 		if curTs > ghost[i].startTs then
@@ -90,26 +96,27 @@ function phase(lul_device)
 			elseif ghost[i]:status() ~= "dead" then
 				
 				if not Utils.existsInTbl(status,ghost[i].name) then
-					luup.log("VGaction: Light ON ".. ghost[i]:info())
+					Utils.log("VGaction: Light ON ".. ghost[i]:info())
 					luup.call_action("urn:upnp-org:serviceId:Dimming1", "SetLoadLevelTarget", {newLoadlevelTarget = ghost[i].dimLevel}, ghost[i].lightId)
 					table.insert(status, ghost[i].name)
 				end
 			end
 
 			if curTs > ghost[i].endTs and not Utils.existsInTbl(cemetery, ghost[i].name) then
-				luup.log("VGaction: Light Off:"..ghost[i]:info())
+				Utils.log("VGaction: Light Off:"..ghost[i]:info())
 				luup.call_action("urn:upnp-org:serviceId:Dimming1", "SetLoadLevelTarget", {newLoadlevelTarget = 0}, ghost[i].lightId)
 				if Utils.existsInTbl(status,ghost[i].name) then 
 					Utils.tblRemove(status, ghost[i].name) 
 					table.insert(cemetery, ghost[i].name)
-					luup.log("VGinfo: moved ghost to cemetery:" .. ghost[i].name)
+					Utils.log("VGinfo: moved ghost to cemetery:" .. ghost[i].name)
 				end
 			end
 		end
 	end
 	-- phase end or re-rune
 	if #ghost == #cemetery then
-		luup.log("VGinfo: Phase ended recalculation ghost times and starting over.")
+		Utils.log("VGinfo: Phase ended recalculation ghost times and starting over.")
+		luup.variable_set(sid,"State",0,tonumber(lul_device))
 		main(lul_device)
 	else
 		recalc = 0
@@ -119,6 +126,11 @@ function phase(lul_device)
 			luup.variable_set(sid,"Changes",0,tonumber(lul_device))
 			main(lul_device)
 		else
+			if #status > 0 then
+				luup.variable_set(sid,"State",100,tonumber(lul_device))
+			else
+				luup.variable_set(sid,"State",50,tonumber(lul_device))
+			end
 			luup.call_timer("phase", 1, 10, '',lul_device)
 		end
 	end

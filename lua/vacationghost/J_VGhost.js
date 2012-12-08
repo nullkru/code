@@ -80,7 +80,8 @@ function vghostsettings (device)
 		for (i = 1; i <= 8; i++)
 		{
 			html += '<tr>';
-			html += '<td><input type="number" min="1" max="999" id="light'+window["jlid"+i]+'" value="'+window["jlid"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn1+'\')"/></td>';
+			//html += '<td><input type="number" min="1" max="999" id="light'+window["jlid"+i]+'" value="'+window["jlid"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn1+'\')"/></td>';
+			html += '<td><select id="selLight'+i+'" style="width:50px;"></select></td>';
 			html += '<td><input type="time" maxlength="5" id="starts'+window["jts"+i]+'" value="'+window["jts"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn2+'\')"/></td>';
 			html += '<td><input type="time" maxlength="5" id="stops'+window["jtst"+i]+'" value="'+window["jtst"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn3+'\')"/></td>';
 			html += '<td><input type="number" min="0" max="999" id="oncycles'+window["joc"+i]+'" value="'+window["joc"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn7+'\')"/></td>';
@@ -89,8 +90,11 @@ function vghostsettings (device)
 			html += '<td><input type="number" min="1" max="100" id="onpropabilities'+window["jop"+i]+'" value="'+window["jop"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn6+'\')" /></td>';
 			html += '<td><input type="number" min="0" max="100" id="dimlevels'+window["jdl"+i]+'" value="'+window["jdl"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn8+'\')"/></td>';
 			html += '</tr>';
+			// Add option element
+			getOptionDevices(window["jlid"+i],i);	
 		}
-			
+	
+
 		// show save button and checkbox
 		valchk = get_device_state(device,HC_SID,"Night",1);
 		if (valchk==1){chk = "checked";}
@@ -169,9 +173,9 @@ function saveall (luupcode,device)
 //  function: Ghost Informations
 //*****************************************************************************
 
-function getDevicesPOC() {
+function getOptionDevices(select,curN) {
 
-	var testSel = 34;
+	var selectedID = select;
 
 	new Ajax.Request("/port_3480/data_request", {
 		method: "get",
@@ -181,9 +185,8 @@ function getDevicesPOC() {
 		onSuccess: function(transport) {
 			var res = transport.responseText.evalJSON();
 
-			//alert(res['devices'][1]['category']);
-			var selBox = document.getElementById("VGdevices");
-			selBox.options[0]=new Option("select dev");
+			var selBox = document.getElementById("selLight"+curN);
+			selBox.options[0]=new Option("Select device:",0);
 
 			var rooms = res['rooms'];
 			var curRoomId = 0; 
@@ -204,15 +207,18 @@ function getDevicesPOC() {
 						curRoomId = dev['room'];
 					}
 
-					if(dev['id'] == testSel){
+					if(dev['id'] == selectedID){
 						selBox.options[n++] = new Option(dev['id']+" "+dev['name'],dev['id'],true);
+						selBox.onchange = function(){save(curN,this.value,'jlid');};
 						selBox.options[0] = new Option(dev['id'],dev['id']);
 					}
 					else {
 						selBox.options[n++] = new Option(dev['id']+" "+dev['name'],dev['id']);
+						selBox.onchange = function(){save(curN,this.value,'jlid');};
 					}
 				}
 			}
+			selBox.options[n++] = new Option("None",0);
 		},
 		onFailure: function() {
 			alert("fuck");
@@ -228,11 +234,9 @@ function vghostInfo(device) {
 			//'<textarea id="VGinfo" style="width:100%; height:100px;"></textarea>',
 			'<table id="VGtblInfo" style="width:100%; border:1px solid #000;">',
 				'<tr><th>Name</th><th>ID</th><th>From</th><th>To</th><th>On</th></tr></table>',
-			'<select name="VGdevs" id="VGdevices"></select>',
 		'</div>'
 	].join("\n");
 
-	getDevicesPOC();
 	
 	new Ajax.Request("/cmh/VGhostInfo.json", {
 		method: "get",
@@ -254,7 +258,6 @@ function vghostInfo(device) {
 				row.insertCell(2).innerHTML = g['start'];
 				row.insertCell(3).innerHTML = g['end'];
 				row.insertCell(4).innerHTML = g['date'];
-
 
 			}
 			//document.getElementById("VGinfo").innerHTML = ghostInfo;
