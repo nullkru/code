@@ -106,4 +106,12 @@ function Utils.writeJson(ghost)
 	file:close()
 end
 
+function Utils.clearJson()
+	--local file = io.open("/tmp/VGhostInfo.json","w")
+	local file = io.open("/www/cmh/VGhostInfo.json","w")
+	file:write("")
+	file:close()
+end
+
+
 -- END Utils Class

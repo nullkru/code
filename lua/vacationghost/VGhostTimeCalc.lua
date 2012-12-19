@@ -32,6 +32,7 @@ function TimeCalc.new(startTime, endTime, onTime, onTimeVariation, onCycles, onP
 	endt = Utils.split(endTime, ":")
 	endTs = os.time({year=os.date('%Y',ts), month=os.date('%m',ts), day=os.date('%d',ts), hour=endt[1], min=endt[2] })
 	
+	-- miternacht handling
 	if(endTs > startTs) then
 		attr.onPhase = endTs - startTs
 	else
@@ -48,11 +49,10 @@ function TimeCalc:getTimes()
 	breakCycles = {}
 	gPhases = {}
 
-	--print("oncyc: " .. self.onCycles)
+	-- on cycles berechnen 
 	while (self.onPhase - (self.onCycles * (self.onTime + 300 + self.onTimeVariation))) < 1 do
 		self.onCycles=self.onCycles - 1
 	end
-	--print("oncyc after: " .. self.onCycles)
 
 	-- phasen berechnen wie lange licht brennt
 	for i=0,self.onCycles do
@@ -70,7 +70,9 @@ function TimeCalc:getTimes()
 	-- break times
 	totalBreakTime = self.onPhase - totalOnTime - (self.onCycles*300)
 	for i=0,self.onCycles do
+
 		if totalBreakTime < 300 then totalBreakTime=300 end
+
 		local res = math.random(300,totalBreakTime)
 		table.insert(breakCycles, res)
 		totalBreakTime=totalBreakTime-breakCycles[i+1]

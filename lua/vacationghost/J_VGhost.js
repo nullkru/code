@@ -186,7 +186,7 @@ function getOptionDevices(select,curN) {
 			var res = transport.responseText.evalJSON();
 
 			var selBox = document.getElementById("selLight"+curN);
-			selBox.options[0]=new Option("Select device:");
+			selBox.options[0]=new Option("Select device:","0");
 
 			var rooms = res['rooms'];
 			var curRoomId = 0; 
@@ -218,7 +218,7 @@ function getOptionDevices(select,curN) {
 					}
 				}
 			}
-			selBox.options[n++] = new Option("None");
+			selBox.options[n++] = new Option("None","0");
 		},
 		onFailure: function() {
 			alert("fuck");
@@ -253,7 +253,7 @@ function vghostInfo(device) {
 			for(var i=0; i<res.length; i++){
 				var g = res[i];
 				//ghostInfo += g['name'] + " light ID: "+ g['lightId'] +" from: "+ g['start'] +" till: "+ g['end'] +" on: "+ g['date'] +"\n";
-				if(ghosts.length <= res.length) {
+				if(ghosts.length < res.length) {
 					ghosts.push(g);
 				}
 				var tblRowCount = tbl.rows.length;
@@ -299,7 +299,7 @@ function startUpdater() {
 		}
 	}
 	if(iHsize == elem.innerHTML.length){ 
-		elem.innerHTML = elem.innerHTML + '<br />No ghosts around';
+		elem.innerHTML = elem.innerHTML + '<br />No ghosts in your house.';
    	}
 	elem.innerHTML = elem.innerHTML + '<br /><br /><b>up next:</b><br />';
 	for(var i = 0; i<4; i++){

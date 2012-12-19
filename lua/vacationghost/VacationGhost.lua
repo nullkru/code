@@ -26,6 +26,8 @@ function main(lul_device)
 		cemetery = {}
 		ghost = {}
 		for row=1,8 do
+
+			-- Daten aus web interface abfragen
 			lightId = luup.variable_get(sid,"LightID" ..row, vgPluginId)
 			timeStart = luup.variable_get(sid,"TimeStart" ..row, vgPluginId)
 			timeStop = luup.variable_get(sid,"TimeStop" ..row, vgPluginId)
@@ -38,24 +40,26 @@ function main(lul_device)
 			-- Zeiten für Geister berechnen
 			calcTimes = TimeCalc.new(timeStart,timeStop,tonumber(onTime),tonumber(onVariation),tonumber(onCycle),tonumber(onPropability))
 			times = calcTimes:getTimes()
-
+			
+			-- create ghosts and push to ghost array
 			for t=1,#times do
-				if not (os.time() > times[t][2]) then
+				if not (os.time() > times[t][2]) and tonumber(lightId) > 0 then
 					g = Ghost.new("Ghost"..row..t..#times, tonumber(lightId), times[t][1],times[t][2],tonumber(dimLevel))
 					table.insert(ghost, g)
 				end
 			end
 		end
 
-
 		-- abfragen der isNight() variable
-		isNight = luup.variable_get(sid,"Night",vgPluginId)
-		if luup.is_night() and tonumber(isNight) > 0 then isNight = true end 
+		cbNight = luup.variable_get(sid,"Night",vgPluginId)
+		run = true
+		if tonumber(cbNight) > 0 then 
+			if not luup.is_night() then run = false end
+		end 
 
 		-- informationen der Geister anzeigen
-		if #ghost > 0 and isNight then
+		if #ghost > 0 and run then
 			for n=1,#ghost do
-				--luup.log("VGinitPhase: "..ghost[n]:info())
 				Utils.log("VGinitPhase: "..ghost[n]:info())
 			end
 			Utils.writeJson(ghost)
@@ -70,6 +74,8 @@ function main(lul_device)
 
 	else
 		Utils.log("VGinitPhase: VacationGhost is disabled, sleep and start over")
+		Utils.clearJson()
+		luup.variable_set(sid,"State",0,tonumber(lul_device))
 		luup.call_timer("main", 1, 10, "", lul_device)
 	end
 end
