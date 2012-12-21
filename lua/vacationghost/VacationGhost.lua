@@ -82,7 +82,6 @@ end
 
 function phase(lul_device)
 	-- abarbeiten der phase
-	
 	curTs = os.time()
 
 	Utils.log("VGdebug: total ghosts: "..#ghost)
