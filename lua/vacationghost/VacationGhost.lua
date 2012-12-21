@@ -25,8 +25,8 @@ function main(lul_device)
 		status = {}
 		cemetery = {}
 		ghost = {}
-		for row=1,8 do
 
+		for row=1,8 do
 			-- Daten aus web interface abfragen
 			lightId = luup.variable_get(sid,"LightID" ..row, vgPluginId)
 			timeStart = luup.variable_get(sid,"TimeStart" ..row, vgPluginId)

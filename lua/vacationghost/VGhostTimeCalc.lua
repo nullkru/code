@@ -15,7 +15,7 @@ onCycles = 5
 TimeCalc = {}
 TimeCalc.__index = TimeCalc
 
-function TimeCalc.new(startTime, endTime, onTime, onTimeVariation, onCycles, onProbability)
+function TimeCalc.new(startTime, endTime, onTime, onTimeVariation, onCycles, onPropability)
 	local attr = {}
 
 	attr.startTime = startTime
@@ -23,7 +23,7 @@ function TimeCalc.new(startTime, endTime, onTime, onTimeVariation, onCycles, onP
 	attr.onTime = onTime * 60
 	attr.onTimeVariation = onTimeVariation * 60
 	attr.onCycles = onCycles
-	attr.onProbability = onProbability
+	attr.onPropability = onPropability
 
 	-- Timestamps berechnen
 	ts = os.time()
@@ -48,9 +48,10 @@ function TimeCalc:getTimes()
 	onCycleTime = {}
 	breakCycles = {}
 	gPhases = {}
+	minBreak = 60 
 
 	-- on cycles berechnen 
-	while (self.onPhase - (self.onCycles * (self.onTime + 300 + self.onTimeVariation))) < 1 do
+	while (self.onPhase - (self.onCycles * (self.onTime + minBreak + self.onTimeVariation))) < 1 do
 		self.onCycles=self.onCycles - 1
 	end
 
@@ -68,26 +69,30 @@ function TimeCalc:getTimes()
 	for i,v in ipairs(onCycleTime) do totalOnTime=totalOnTime + v end
 
 	-- break times
-	totalBreakTime = self.onPhase - totalOnTime - (self.onCycles*300)
+	totalBreakTime = self.onPhase - totalOnTime - (self.onCycles * minBreak)
 	for i=0,self.onCycles do
+		
+		if totalBreakTime < minBreak then totalBreakTime=minBreak end
 
-		if totalBreakTime < 300 then totalBreakTime=300 end
-
-		local res = math.random(300,totalBreakTime)
+		local res = math.random(minBreak,totalBreakTime)
 		table.insert(breakCycles, res)
 		totalBreakTime=totalBreakTime-breakCycles[i+1]
 	end
 
-	-- final phase start - end calculations
+	-- final phase start - end calculations -> number of ghosts
 	for i=1,self.onCycles do
-		if i == 1 then 
-			gStart = startTs + breakCycles[i]
-		else
-			gStart = gPhases[i-1][2] + breakCycles[i]
-		end
+		--if math.random(100) <= tonumber(self.onPropability) then
+			if i == 1 then 
+				gStart = startTs + breakCycles[i]
+			else
+				gStart = gPhases[i-1][2] + breakCycles[i]
+			end
 
-		local gStop = gStart + onCycleTime[i]
-		table.insert(gPhases,{gStart,gStop})
+			local gStop = gStart + onCycleTime[i]
+			table.insert(gPhases,{gStart,gStop})
+		--else
+		--	table.insert(gPhases,{0,0})
+		--end
 	end
 	
 	return gPhases

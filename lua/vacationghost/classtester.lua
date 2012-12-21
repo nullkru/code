@@ -25,7 +25,7 @@ gs:resume()
 print(gs:info())
 gs:resume()
 
-Utils.writeJson(g)
+--Utils.writeJson(g)
 
 
 -- Utils

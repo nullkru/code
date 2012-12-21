@@ -63,7 +63,7 @@ function vghostsettings (device)
 			html += '<td style="font-weight:bold; text-align:left; width:10%">Cycles:</td>';
 			html += '<td style="font-weight:bold; text-align:left; width:10%">OnTime:</td>';
 			html += '<td style="font-weight:bold; text-align:left; width:10%">Variation:</td>';
-			html += '<td style="font-weight:bold; text-align:left; width:10%">Probability:</td>';
+			//html += '<td style="font-weight:bold; text-align:left; width:10%">Probability:</td>';
 			html += '<td style="font-weight:bold; text-align:left; width:10%">DimLevel:</td>';
 		html += '</tr>';
  
@@ -87,7 +87,7 @@ function vghostsettings (device)
 			html += '<td><input type="number" min="0" max="999" id="oncycles'+window["joc"+i]+'" value="'+window["joc"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn7+'\')"/></td>';
 			html += '<td><input type="number" min="1" max="999" id="ontimes'+window["jot"+i]+'" value="'+window["jot"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn4+'\')"/></td>';
 			html += '<td><input type="number" min="1" max="999" id="onvariations'+window["jov"+i]+'" value="'+window["jov"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn5+'\')"/></td>';
-			html += '<td><input type="number" min="1" max="100" id="onpropabilities'+window["jop"+i]+'" value="'+window["jop"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn6+'\')" /></td>';
+			//html += '<td><input type="number" min="1" max="100" id="onpropabilities'+window["jop"+i]+'" value="'+window["jop"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn6+'\')" /></td>';
 			html += '<td><input type="number" min="0" max="100" id="dimlevels'+window["jdl"+i]+'" value="'+window["jdl"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn8+'\')"/></td>';
 			html += '</tr>';
 			// Add option element
