@@ -193,6 +193,7 @@ function getOptionDevices(select,curN) {
 			var n = 1;
 
 			for(var i=0; i<res['devices'].length; i++){
+
 				var dev = res['devices'][i];
 
 				if (dev['category'] == 2 || dev['category'] == 3){
@@ -204,6 +205,10 @@ function getOptionDevices(select,curN) {
 							}
 						}
 						selBox.options[n++] = new Option("-- "+rooms[curRoomId]['name'],"");
+						curRoomId = dev['room'];
+					}
+					else if (dev['room'] == 0) {
+						selBox.options[n++] = new Option("-- No Room","");
 						curRoomId = dev['room'];
 					}
 
@@ -221,7 +226,7 @@ function getOptionDevices(select,curN) {
 			selBox.options[n++] = new Option("None","0");
 		},
 		onFailure: function() {
-			alert("fuck");
+			alert("something went wrong...");
 		}
 	});
 	return true;	
@@ -242,7 +247,7 @@ function vghostInfo(device) {
 	].join("\n");
 
 
-	new Ajax.Request("/cmh/VGhostInfo.json", {
+	new Ajax.Request("/cmh/VGhostInfo.id"+device+".json", {
 		method: "get",
 		onSuccess: function(transport) {
 			var res = transport.responseText.evalJSON();

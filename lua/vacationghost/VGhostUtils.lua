@@ -57,8 +57,9 @@ function Utils.tblRemove(tbl, str)
 	end
 end
 
-function Utils.genUIinfos(ghost) 
-	local file = io.open("/www/cmh/VacationGhost.info.txt", "w")
+function Utils.genUIinfos(lul_device,ghost) 
+	local fileName = "/www/cmh/VacationGhost.id"..lul_device..".log"
+	local file = io.open(fileName, "w")
 	local str = ''
 	for i=1,#ghost do
 		str = str .. ghost[i]:info()	
@@ -68,25 +69,31 @@ function Utils.genUIinfos(ghost)
 	return str
 end	
 
-function Utils.log(msg)
-	local file = io.open("/www/cmh/VacationGhost.log", "a")
+function Utils.log(lul_device,msg)
+	local fileName = "/www/cmh/VacationGhost.id"..lul_device..".log"
+	--local file = io.open(fileName, "a")
 	ts = os.date('%c',os.time())
-	file:write(ts..": "..msg.."\n")
-	file:close()
+	--file:write(ts..": "..msg.."\n")
+	--file:close()
 	luup.log(msg)
 end
 
-function Utils.clearLog()
-	local file = io.open("/www/cmh/VacationGhost.log", "w")
+function Utils.clearLog(lul_device)
+	-- remove this on next release
+	os.execute("rm -rf /www/cmh/VGhostInfo.log ; rm -rf /www/cmh/VacationGhost.info.txt ; rm -rf /www/cmh/VacationGhost.log")
+
+	local fileName = "/www/cmh/VacationGhost.id"..lul_device..".log"
+	local file = io.open(fileName, "w")
 	ts = os.date('%X %x',os.time())
 	file:write(ts.." New Phase \n")
 	file:close()
 end
 
 
-function Utils.writeJson(ghost)
+function Utils.writeJson(lul_device,ghost)
 	--local file = io.open("/tmp/VGhostInfo.json","w")
-	local file = io.open("/www/cmh/VGhostInfo.json","w")
+	local fileName = "/www/cmh/VGhostInfo.id"..lul_device..".json"
+	local file = io.open(fileName,"w")
 	local jsArr = '['
 	for i=1,#ghost do
 		endchar = "},"
@@ -106,12 +113,29 @@ function Utils.writeJson(ghost)
 	file:close()
 end
 
-function Utils.clearJson()
+function Utils.clearJson(lul_device)
 	--local file = io.open("/tmp/VGhostInfo.json","w")
-	local file = io.open("/www/cmh/VGhostInfo.json","w")
+	-- remove this on next release
+	os.execute("rm -rf /www/cmh/VGhostInfo.json")
+	--
+	local fileName = "/www/cmh/VGhostInfo.id"..lul_device..".json"
+	local file = io.open(fileName,"w")
 	file:write("")
 	file:close()
 end
 
+function Utils.switchDev(id, value)
+	local type = luup.devices[id].device_type
 
+	if type == "urn:schemas-upnp-org:device:DimmableLight:1" then
+		luup.call_action("urn:upnp-org:serviceId:Dimming1", "SetLoadLevelTarget", {newLoadlevelTarget = value}, id)
+	elseif type == "urn:schemas-upnp-org:device:BinaryLight:1" then
+		if value > 0 then
+			value = 1
+		end
+		luup.call_action("urn:upnp-org:serviceId:SwitchPower1","SetTarget", {newTargetValue = value}, id)
+	else
+		luup.log("VGinfo: Device type not supported. Please report deatails on forum.micasaverde.com. Details: " .. type )
+	end
+end
 -- END Utils Class
