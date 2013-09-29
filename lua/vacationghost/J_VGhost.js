@@ -183,47 +183,49 @@ function getOptionDevices(select,curN) {
 			id: "lu_sdata"
 		},	
 		onSuccess: function(transport) {
+
 			var res = transport.responseText.evalJSON();
 
 			var selBox = document.getElementById("selLight"+curN);
 			selBox.options[0]=new Option("Select device:","0");
+			selBox.options[1] = new Option("None","0");
 
 			var rooms = res['rooms'];
 			var curRoomId = 0; 
-			var n = 1;
+			var n = 2;
 
-			for(var i=0; i<res['devices'].length; i++){
+            var r = 0;
+            for(r=0; r<res['rooms'].length + 1; r++){
 
-				var dev = res['devices'][i];
+                if(curRoomId == 0){ 
+                    roomName = "no room";
+                }   
+                else {
+                    roomName = res['rooms'][r-1]['name'];
+                }   
 
-				if (dev['category'] == 2 || dev['category'] == 3){
-			
-					if( curRoomId != dev['room']){
-						for(var r=0; r<rooms.length ; r++){
-							if(rooms[r]['id'] == dev['room']){
-								curRoomId = r;
-							}
-						}
-						selBox.options[n++] = new Option("-- "+rooms[curRoomId]['name'],"");
-						curRoomId = dev['room'];
-					}
-					else if (dev['room'] == 0) {
-						selBox.options[n++] = new Option("-- No Room","");
-						curRoomId = dev['room'];
-					}
+                for(var i=0; i<res['devices'].length; i++){
 
-					if(dev['id'] == selectedID){
-						selBox.options[n++] = new Option(dev['id']+" "+dev['name'],dev['id'],true);
-						selBox.onchange = function(){save(curN,this.value,'jlid');};
-						selBox.options[0] = new Option(dev['id'],dev['id']);
-					}
-					else {
-						selBox.options[n++] = new Option(dev['id']+" "+dev['name'],dev['id']);
-						selBox.onchange = function(){save(curN,this.value,'jlid');};
-					}
-				}
-			}
-			selBox.options[n++] = new Option("None","0");
+                    var dev = res['devices'][i];
+
+                    if (dev['category'] == 2 || dev['category'] == 3){ 
+                        
+                        if(dev['id'] == selectedID && dev['room'] == curRoomId ){
+                            selBox.options[n++] = new Option(roomName + " - " +dev['name'] + " id:"+dev['id']+"", dev['id'],true);
+                            selBox.onchange = function(){save(curN,this.value,'jlid');};
+                            selBox.options[0] = new Option(dev['id'],dev['id']);
+                        }   
+                        else if(dev['room'] == curRoomId) {
+                            selBox.options[n++] = new Option(roomName + " - " +dev['name'] + " id:"+dev['id']+"",dev['id']);
+                            selBox.onchange = function(){save(curN,this.value,'jlid');};
+                        }   
+                    }   
+                }   
+
+                curRoomId = res['rooms'][r]['id'];  
+
+            }
+
 		},
 		onFailure: function() {
 			alert("something went wrong...");
