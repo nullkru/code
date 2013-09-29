@@ -8,6 +8,7 @@
     ],
   "x":"2",
   "y":"4",
+  "inScene":"1",
   "DisplayStatus": {
     "Service": "urn:upnp-org:serviceId:VGhost1",
     "Variable": "State",
@@ -143,6 +144,3 @@
   "DeviceType": "urn:schemas-upnp-org:device:VGhost:1",
   "device_type": "urn:schemas-upnp-org:device:VGhost:1"
 }
-
-
-

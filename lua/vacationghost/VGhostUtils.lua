@@ -127,9 +127,13 @@ end
 function Utils.switchDev(id, value)
 	local type = luup.devices[id].device_type
 
-	if type == "urn:schemas-upnp-org:device:DimmableLight:1" then
+	if type == "urn:schemas-upnp-org:device:DimmableLight:1" or
+	   type == "urn:geektaco-info:device:Dimmer:1" or
+       type == "urn:geektaco-info:device:dimmer-kpl:1" then
 		luup.call_action("urn:upnp-org:serviceId:Dimming1", "SetLoadLevelTarget", {newLoadlevelTarget = value}, id)
-	elseif type == "urn:schemas-upnp-org:device:BinaryLight:1" then
+	elseif type == "urn:schemas-upnp-org:device:BinaryLight:1" or
+	       type == "urn:geektaco-info:device:relay-kpl:1" or
+           type == "urn:geektaco-info:device:Relay:1" then
 		if value > 0 then
 			value = 1
 		end
