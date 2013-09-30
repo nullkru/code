@@ -80,7 +80,6 @@ function vghostsettings (device)
 		for (i = 1; i <= 8; i++)
 		{
 			html += '<tr>';
-			//html += '<td><input type="number" min="1" max="999" id="light'+window["jlid"+i]+'" value="'+window["jlid"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn1+'\')"/></td>';
 			html += '<td><select id="selLight'+i+'" style="width:50px;"></select></td>';
 			html += '<td><input type="time" maxlength="5" id="starts'+window["jts"+i]+'" value="'+window["jts"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn2+'\')"/></td>';
 			html += '<td><input type="time" maxlength="5" id="stops'+window["jtst"+i]+'" value="'+window["jtst"+i]+'" style="width:95%; height:100%; text-align:left; font-family:arial,sans-serif; font-size:11px; border:1px solid #0379D8;" onChange="save('+i+',this.value,\''+vn3+'\')"/></td>';
@@ -306,13 +305,13 @@ function startUpdater() {
 		}
 	}
 	if(iHsize == elem.innerHTML.length){ 
-		elem.innerHTML = elem.innerHTML + '<br />No ghosts in your house.';
+		elem.innerHTML = elem.innerHTML + '<br />Currently no active ghosts in your house.';
    	}
-	elem.innerHTML = elem.innerHTML + '<br /><br /><b>up next:</b><br />';
-	for(var i = 0; i<4; i++){
-			elem.innerHTML = elem.innerHTML + '<br />light ID:'+ghosts[last]['lightId']+' starts:'+getLTime(ghosts[last]['start']);
-			last++;
-	}
+//	elem.innerHTML = elem.innerHTML + '<br /><br /><b>up next:</b><br />';
+//	for(var i = 0; i<4; i++){
+//			elem.innerHTML = elem.innerHTML + '<br />light ID:'+ghosts[last]['lightId']+' starts:'+getLTime(ghosts[last]['start']);
+//			last++;
+//	}
 }
 
 function getLDate(ts) {
