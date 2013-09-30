@@ -7,16 +7,23 @@ var ipaddress = data_request_url;
 //*****************************************************************************
 // function: showStatus => used to show the status bar on top
 //*****************************************************************************
-function showStatus (text, error)
+function showStatus (text, color)
 {
-	if (!error)
+
+if (valchk==1){chk = "checked";}
+	if (color=="green")
 	{
 		document.getElementById ('status_display').style.backgroundColor = "#90FF90";
 		document.getElementById ('status_display').innerHTML = text;
 	}
-	else
+	else if (color=="red")
 	{
 		document.getElementById ('status_display').style.backgroundColor = "#FF9090";
+		document.getElementById ('status_display').innerHTML = text;
+	}
+	else if (color=="orange")
+	{
+		document.getElementById ('status_display').style.backgroundColor = "#FFC634";
 		document.getElementById ('status_display').innerHTML = text;
 	}
 }
@@ -105,7 +112,7 @@ function vghostsettings (device)
 		html += '</tr>';
 	}
 	set_panel_html (html);
-	showStatus ("Enter your Settings:", false);
+	showStatus ("Enter your Settings:", "green");
 }
 //*****************************************************************************
 //  function: save => set variables after change and set change variables
@@ -115,18 +122,26 @@ function save(varis, newValue, varnames)
         window[varnames+varis] = newValue;
 	window[varnames+varis+"chg"] = "1";
 
-	if (varnames=="joc" && newValue=="0"){showStatus ("ATTENTION: OnCycle" +varis+ " is set to zero!", true)}
-	else if (varnames=="jot"&& newValue=="0"){showStatus ("ATTENTION: OnTime" +varis+ " is set to zero!", true)}
-	else if (varnames=="jov" && newValue>=window["jot"+varis]){showStatus ("ATTENTION: Variation" +varis+ " is bigger or equal to OnTime" +varis+ "!", true)}
-	else if (varnames=="jdl"&& newValue=="0"){showStatus ("ATTENTION: DimLevel" +varis+ " is set to zero, will be randomized!", true)}
-	else{showStatus ("UNSAVED CHANGES!", true)}
+	if (varnames=="joc" && newValue=="0"){showStatus ("ATTENTION: OnCycle" +varis+ " is set to zero!", "red")}
+	else if (varnames=="jot"&& newValue=="0"){
+		showStatus ("ATTENTION: OnTime" +varis+ " is set to zero!", "red")
+	}
+	else if (varnames=="jov" && newValue>=window["jot"+varis]){
+		showStatus ("ATTENTION: Variation" +varis+ " is bigger or equal to OnTime" +varis+ "!", "red")
+	}
+	else if (varnames=="jdl"&& newValue=="0"){
+		showStatus ("ATTENTION: DimLevel" +varis+ " is set to zero, will be randomized!", "orange")
+	}
+	else{
+		showStatus ("UNSAVED CHANGES!", "orange")
+	}
 }
 //*****************************************************************************
 //  function: savenight => set variables for night and according change variable
 //*****************************************************************************
 function savenight(cb)
 {
-	showStatus ("UNSAVED CHANGES!", true);
+	showStatus ("UNSAVED CHANGES!", "orange");
 	ngtchg = 1;
     if (cb.checked){ngt = "1";}
 	else {ngt = "0";}
@@ -171,7 +186,7 @@ function saveall (luupcode,device)
 	// Update Night variable
 	if (ngtchg==1){sendhttp(+device,"Night",+ngt)}
 
-	showStatus ("ALL CHANGES SAVED!", false);
+	showStatus ("ALL CHANGES SAVED!", "green");
 }
 //*****************************************************************************
 //  function: Ghost Informations
@@ -245,6 +260,10 @@ function vghostInfo(device) {
 
 	var html = [
 		'<div id="info">',
+
+			'<div><p id="status_display" style="width:100%; position:relative; margin-left:auto; margin-right:auto; table-layout:fixed; text-align:center; border-radius: 5px; color:black"></div>',
+			'<table style="width:100%; position:relative; margin-left:auto; margin-right:auto; border-radius: 5px">',
+
 			//'<textarea id="VGinfo" style="width:100%; height:100px;"></textarea>',
 			'<div id="currentRunning" style="margin-bottom:10px; padding:5px;"></div>',
 			'<table id="VGtblInfo" style="width:100%; border:1px solid #000;">',
@@ -283,17 +302,27 @@ function vghostInfo(device) {
 			document.getElementById("VGinfo").innerHTML = "No more ghosts or disabled?";
 		}
 	});
-	startRefresher();
-	set_panel_html(html);
-	showStatus ("Next Ghost times", false);
+	startRefresher(device);
+        set_panel_html(html);
 	return true;
 }
 
-function startRefresher() {
-	setInterval("startUpdater();",1000);
+function startRefresher(device) {
+	setInterval("startUpdater("+device+");",1000);
 }
 
-function startUpdater() {
+function showGhostState(device) {
+	stateenabled = get_device_state(device,HC_SID,"OnOff",1);
+	stats = get_device_state(device,HC_SID,"State",1);
+
+	if (stateenabled=="0"){showStatus ("State: Ghost is disabled!", "red");}
+	else if (stats=="0"){showStatus ("State: Ghost is active but no ghost were calculated!", "orange");}
+	else if (stats=="50"){showStatus ("State: Ghost is active but no lights are currently turned on by the ghost!", "orange");}
+	else if (stats=="100"){showStatus ("State: Ghost is active and lights are currently turned on by the ghost!", "green");}
+	else {showStatus ("State: Error! Value: "+stateenabled, "red");}
+}
+
+function startUpdater(device) {
 	var now = new Date();
 	var elem = document.getElementById('currentRunning');
 	elem.innerHTML = null;
@@ -309,9 +338,10 @@ function startUpdater() {
 			last = i;
 		}
 	}
-	if(iHsize == elem.innerHTML.length){ 
+	if(iHsize == elem.innerHTML.length){
 		elem.innerHTML = elem.innerHTML + '<br />Currently no active ghosts in your house.';
    	}
+	showGhostState(device);
 //	elem.innerHTML = elem.innerHTML + '<br /><br /><b>up next:</b><br />';
 //	for(var i = 0; i<4; i++){
 //			elem.innerHTML = elem.innerHTML + '<br />light ID:'+ghosts[last]['lightId']+' starts:'+getLTime(ghosts[last]['start']);
