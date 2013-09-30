@@ -112,9 +112,14 @@ function vghostsettings (device)
 //*****************************************************************************
 function save(varis, newValue, varnames)
 {
-	showStatus ("UNSAVED CHANGES!", true);
-    window[varnames+varis] = newValue;
+        window[varnames+varis] = newValue;
 	window[varnames+varis+"chg"] = "1";
+
+	if (varnames=="joc" && newValue=="0"){showStatus ("ATTENTION: OnCycle" +varis+ " is set to zero!", true)}
+	else if (varnames=="jot"&& newValue=="0"){showStatus ("ATTENTION: OnTime" +varis+ " is set to zero!", true)}
+	else if (varnames=="jov" && newValue>=window["jot"+varis]){showStatus ("ATTENTION: Variation" +varis+ " is bigger or equal to OnTime" +varis+ "!", true)}
+	else if (varnames=="jdl"&& newValue=="0"){showStatus ("ATTENTION: DimLevel" +varis+ " is set to zero, will be randomized!", true)}
+	else{showStatus ("UNSAVED CHANGES!", true)}
 }
 //*****************************************************************************
 //  function: savenight => set variables for night and according change variable
