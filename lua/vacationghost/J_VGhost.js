@@ -1,5 +1,4 @@
 // device service
-TEST
 var HC_SID = "urn:upnp-org:serviceId:VGhost1";
 
 //local ip
