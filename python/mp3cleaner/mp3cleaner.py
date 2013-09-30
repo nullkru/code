@@ -34,8 +34,8 @@ class cleaner(object):
 		cleaner.single = options.single
 		cleaner.compilation = options.compilation 
 	
-	def getMp3info(self, file):
-		self.x  = self.id3(file)
+	def getMp3info(self, filename):
+		self.x  = self.id3(filename)
 		x = self.x
 
 		try: x['artist'] = x['artist']
@@ -76,7 +76,7 @@ class cleaner(object):
 				
 	def resizeCover(self, coverfile):
 		img = Image.open(coverfile)
-		coverout = img.resize((300,300), Image.ANTIALIAS)
+		coverout = img.resize((500,500), Image.ANTIALIAS)
 		#filename = '%s' % coverfile.lower()
 		filename = 'folder.jpg'
 		coverout.save(filename)
@@ -105,8 +105,9 @@ class cleaner(object):
 		if artist: 
 			self.x['artist'] = u'%s' % artist
 		
-		if title and title != self.x.title:
-			self.x['title'] = u'%s' % title
+		#if title and title != self.x.title:
+		if title:
+			self.x['title'] = u'%s' % self.removeAdv(title)
 		
 		if album:
 			self.x['album'] = u'%s' % album  #.decode('utf-8')
@@ -120,7 +121,6 @@ class cleaner(object):
 		if genre:
 			self.x['genre'] = u'%s' % genre
 
-
 		if self.compilation:
 			self.x['compilation'] = u'1'
 			self.x['discnumber'] = u'%s' % self.compilationdisc 
@@ -128,7 +128,6 @@ class cleaner(object):
 		if self.compilationperformer:
 			self.x['performer'] = b['performer']
 			
-
 		self.x.save()
 
 	def cleanName(self, name):
@@ -174,6 +173,11 @@ class cleaner(object):
 		name = re.sub(r'[^a-zA-Z0-9_\- \.&!,\'?()]', '', name)
 		name = name.strip()
 		return name
+
+	def removeAdv(self, strTrack):
+		strTrack = re.sub(r' \(DatPiff Exclusive\)','', strTrack)
+		return strTrack
+
 
 	albumArtChoosen = 0
 	discnumberOK = 0
@@ -270,13 +274,13 @@ class cleaner(object):
 		self.getMp3info(firstfile)
 		self.askParams()
 		b = self.basedata
-		for file in self.Files:
-			self.getMp3info(file)
+		for f in self.Files:
+			self.getMp3info(f)
 			if not test:
-				self.setMp3info(b['artist'], b['album'], b['date'], 0, 0, b['genre'])
+				self.setMp3info(b['artist'], b['album'], b['date'], self.x['title'][0], 0, b['genre'])
 				if b['cover']:
-					self.addCover(file,b['cover'])
-			self.newFilename(file, test)
+					self.addCover(f,b['cover'])
+			self.newFilename(f, test)
 
 
 	#compilation specifig vars
@@ -303,7 +307,7 @@ class cleaner(object):
 				cleaner.compilationdisc = self.basedata['discnumber']
 			b = self.basedata
 			if not test:
-				self.setMp3info(0, b['album'], b['date'], 0, 0, b['genre'])
+				self.setMp3info(0, b['album'], b['date'], b['title'], 0, b['genre'])
 				if b['cover']:
 					self.addCover(file,b['cover'])
 			self.newFilename(file, test)

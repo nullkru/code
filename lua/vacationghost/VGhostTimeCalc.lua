@@ -57,10 +57,21 @@ function TimeCalc:getTimes()
 
 	-- phasen berechnen wie lange licht brennt
 	for i=0,self.onCycles do
-		if math.random(10) > 5 then
-			table.insert(onCycleTime, ((self.onTime) - (math.random(0,self.onTimeVariation))))
+		if self.onTimeVariation > 0 then
+			if math.random(10) > 5 then
+				-- abfangen zu grosser onTimeVariation werten
+				calcTime = ((self.onTime) - (math.random(1,self.onTimeVariation)))
+				if calcTime > 1 then
+					table.insert(onCycleTime, calcTime)
+				else
+					table.insert(onCycleTime, 0)
+				end
+
+			else
+				table.insert(onCycleTime, ((self.onTime) + (math.random(1,self.onTimeVariation))))
+			end
 		else
-			table.insert(onCycleTime, ((self.onTime) + (math.random(0,self.onTimeVariation))))
+			table.insert(onCycleTime, self.onTime)
 		end
 	end
 
@@ -89,10 +100,12 @@ function TimeCalc:getTimes()
 			end
 
 			local gStop = gStart + onCycleTime[i]
-			table.insert(gPhases,{gStart,gStop})
-		--else
-		--	table.insert(gPhases,{0,0})
-		--end
+			if gStop ~= gStart then
+				table.insert(gPhases,{gStart,gStop})
+		--	end
+			else
+				table.insert(gPhases,{0,0})
+			end
 	end
 	
 	return gPhases

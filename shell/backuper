@@ -14,8 +14,10 @@ if [[ -e $BACKUPCONF ]]; then
 	date=$(date "+%d-%m-%y_%H:%M")
 
 	#build exclude list
+	#exclude=$(cat $excludefile)
+	exclude=$excludefile
 	for _exclude in $exclude; do
-		_excludelst="${_excludelst} --exclude $_exclude "
+		_excludelst="${_excludelst} --exclude-from $_exclude "
 	done
 
 	backup=${destination}/$(hostname)-${date}	
@@ -25,7 +27,6 @@ if [[ -e $BACKUPCONF ]]; then
 	echo "(i) destination folder: $backup"
 	echo "(i) excluding $_excludelst"
 	sleep 1
-	
 	echo "executing: sudo rsync $rsyncopt $RSYNC_PARAM"
 	sudo rsync $rsyncopt $RSYNC_PARAM
 	exitcode=$?

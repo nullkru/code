@@ -4,6 +4,7 @@
 internaldev="LVDS1"
 extdev="VGA1" #check xrandr for this name
 placement="--right-of"
+#placement="--above"
 #mode="--mode 1280x1024" #resolution for second monitor
 #mode="--mode 1024x768"
 #mode="--mode 1920x1200"

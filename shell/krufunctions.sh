@@ -123,7 +123,7 @@ kps() { ps ax | grep -v grep | grep -v kps | grep $@ | awk '{ print $1 }' ; }
 #kill a process with fuck <appname>
 fuck() 
 {
-	[[ ! "$@" ]] && echo "usage: fuck <command> or fuck you to shutdown" && return 1
+	[[ !"$@" ]] && echo "usage: fuck <command> or fuck you to shutdown" && return 1
 	local x=$@
 	# wish from iwan.chao.ch ;)  
 	if [[ `echo $x` = "you" ]]; then
