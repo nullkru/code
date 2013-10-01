@@ -1,6 +1,8 @@
 -- testing the class
---
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1a176b6518e4be3364035778137eaed44410132e
 
 require("VGhostGhost")
 require("VGhostTimeCalc")
