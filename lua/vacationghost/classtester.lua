@@ -1,5 +1,4 @@
 -- testing the class
---
 
 require("VGhostGhost")
 require("VGhostTimeCalc")
