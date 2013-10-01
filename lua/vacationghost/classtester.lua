@@ -1,8 +1,8 @@
 -- testing the class
-<<<<<<< HEAD
+HEAD
 
-=======
->>>>>>> 1a176b6518e4be3364035778137eaed44410132e
+1a176b6518e4be3364035778137eaed44410132e
+9a56e401205a8308c9cc62cf7e6141de74eb776c
 
 require("VGhostGhost")
 require("VGhostTimeCalc")
