@@ -10,7 +10,8 @@ TODO: + output format definieren in config %a_-_%t_-_usw
 	+ code cleanup
 
 '''
-import mutagen,string, sys, os, re, Image
+import mutagen,string, sys, os, re
+from PIL import Image
 
 class cleaner(object):
 	
