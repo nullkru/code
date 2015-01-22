@@ -1,0 +1,25 @@
+#!/bin/sh
+export ICAROOT=/usr/lib/ICAClient
+tmp=/tmp/ica-$RANDOM
+
+# 1. workaround proxy error
+# 2. enable alt+tab on remote
+awk '{ \
+	gsub("ProxyType.*",""); \
+	gsub("TransparentKeyPassthrough.*","TransparentKeyPassthrough=Remote"); \
+	print \
+}' < $1 > $tmp
+
+rm -rf $1
+
+# start new X server instance
+#export XINITRC=/home/kru/.xinitrc.ras
+#nohup xinit ${ICAROOT}/wfica -file $tmp -- :1 vt${XDG_VTNR} &>/dev/null &
+#nohup xinit /usr/bin/xfce4-terminal -- :1 vt${XDG_VTNR} &>/dev/null &
+
+#xsetroot -solid green -display :1 vt${XDG_VTNR}
+#conky --display=:1
+nohup ${ICAROOT}/wfica -file $tmp
+rm -rf $tmp
+
+
